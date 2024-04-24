@@ -1,0 +1,18 @@
+Descubrir como cargar todo el archivo de Localidades en la base de datos(Pista: buscar como convertir el Excel en un CSV, 
+En teoria deberia cargar via codigo cada columna del Archivo a la Base de Datos)
+
+Recordatorio Para la Proxima vez que quiera abrir el Intento en PHPmyAdmin: Ejecutar Xampp en Apache y MySQL
+
+pedirle a chatGPT que me genere un ejemplo en la cual procese un archivo csv de X columnas y que me complete en una estructura de dato(por ejemplo un vector o una arista)con el siguiente struct "struct localidad {  string id; string nombre; etc..}" teniendo en cuenta que el archivo csv está delimitado por ";".
+
+
+
+Teniendo el archivo excel dividido en partes, intentar importar su informacion con ayuda de Visual Studio Code usando C++
+
+Posibles Soluciones: 
+Quizas y podria usar arreglos para guardar la informacion de cada lista, 
+y asi despues solo tendria que importar los arreglos a las respectivas tablas en la Base de Datos.
+
+stortok: lee caracteres hasta un delimitador aclarado por mi.
+
+tratar de hacer un punto medio en el cual el buscador pueda conectarse a los 3 CSV's y pueda buscar parentesco con lo aclarado por el usuario.
