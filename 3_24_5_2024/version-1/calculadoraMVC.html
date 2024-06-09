@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MVC WebComponent Calculator</title>
+    <style>
+        .numberButton {
+            background-color: blue;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+            border-radius: 6px;
+            width: 100%;
+        }
+        .operatorButton {
+            background-color: #00FF04;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+            border-radius: 6px;
+            width: 100%;
+        }
+        .clearButton {
+            background-color: #FF0000;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+            width: 100%;
+            border-radius: 6px;
+        }
+        .calculateButton {
+            background-color: #FFB900;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+            width: 100%;
+            border-radius: 6px;
+        }
+        .displayResult {
+            border-radius: 6px;
+            width: 100%;
+            height: 40px;
+            font-size: 20px;
+            text-align: right;
+        }
+        table {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+</body>
+<script type="module">
+    // Modelo (Model)
+    class CalculatorModel {
+        constructor() {
+            this.value = '';
+        }
+
+        appendValue(val) {
+            this.value += val;
+            this.notify();
+        }
+
+        clear() {
+            this.value = '';
+            this.notify();
+        }
+
+        calculate() {
+            try {
+                this.value = eval(this.value);
+            } catch (e) {
+                this.value = 'Error';
+            }
+            this.notify();
+        }
+
+        notify() {
+            document.dispatchEvent(new CustomEvent('updateDisplay', { detail: this.value }));
+        }
+    }
+
+    // Vista (View) como WebComponent
+    class CalculatorView extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: 'open' });
+            this.shadowRoot.innerHTML = `
+                <table>
+                    <tr>
+                        <td colspan="4"> 
+                            <input class="displayResult" id="display" type="text" value="" disabled> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button class="numberButton">7</button></td>
+                        <td><button class="numberButton">8</button></td>
+                        <td><button class="numberButton">9</button></td>
+                        <td><button class="operatorButton">+</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="numberButton">4</button></td>
+                        <td><button class="numberButton">5</button></td>
+                        <td><button class="numberButton">6</button></td>
+                        <td><button class="operatorButton">-</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="numberButton">3</button></td>
+                        <td><button class="numberButton">2</button></td>
+                        <td><button class="numberButton">1</button></td>
+                        <td><button class="operatorButton">x</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="numberButton">0</button></td>
+                        <td><button class="numberButton">.</button></td>
+                        <td><button class="calculateButton">=</button></td>
+                        <td><button class="operatorButton">/</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <button class="clearButton">BORRAR</button>
+                        </td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        connectedCallback() {
+            this.shadowRoot.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', event => {
+                    const action = event.target.textContent;
+                    if (!isNaN(action) || action === '.') {
+                        this.appendNumber(action);
+                    } else if (['+', '-', 'x', '/'].includes(action)) {
+                        this.appendOperator(action);
+                    } else if (action === '=') {
+                        this.calculate();
+                    } else if (action === 'BORRAR') {
+                        this.clear();
+                    }
+                });
+            });
+            document.addEventListener('updateDisplay', this.updateDisplay.bind(this));
+        }
+
+        appendNumber(number) {
+            document.dispatchEvent(new CustomEvent('appendValue', { detail: number }));
+        }
+
+        appendOperator(operator) {
+            const op = operator === 'x' ? '*' : operator;
+            document.dispatchEvent(new CustomEvent('appendValue', { detail: op }));
+        }
+
+        calculate() {
+            document.dispatchEvent(new CustomEvent('calculate'));
+        }
+
+        clear() {
+            document.dispatchEvent(new CustomEvent('clear'));
+        }
+
+        updateDisplay(event) {
+            this.shadowRoot.querySelector('#display').value = event.detail;
+        }
+    }
+
+    customElements.define('calculator-view', CalculatorView);
+
+    // Controlador (Controller)
+        const calculatorModel = new CalculatorModel();
+
+        document.addEventListener('appendValue', event => {
+            calculatorModel.appendValue(event.detail);
+        });
+
+        document.addEventListener('calculate', () => {
+            calculatorModel.calculate();
+        });
+
+        document.addEventListener('clear', () => {
+            calculatorModel.clear();
+        });
+
+        document.body.appendChild(document.createElement('calculator-view'));
+</script>
+</html>
