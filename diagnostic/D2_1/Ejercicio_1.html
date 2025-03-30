@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=devide-with, initial-scale=1.0">
+    <title>Ejercicio_1:Menu_De_Opciones(Half_Life)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+        }
+        th, td { 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            text-align: center; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+            font-weight: bold; 
+        }
+    </style>
+<body>
+    <h2>Options</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Gameplay</th>
+                    <th>Keyboard</th>
+                    <th>Mouse</th>
+                    <th>Gamepad</th>
+                    <th>Audio</th>
+                    <th>Video</th>
+                </tr>
+            </thead>
+            <tbody id="Lista_Opciones"></tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="3">MOVEMENT</th>
+                    <th colspan="3">KEY/BUTTON</th>
+                </tr>
+
+                <tr>
+                    <th colspan="3">Move Forward</th>
+                    <th colspan="3">W</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Move Back</th>
+                    <th colspan="3">S</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Move Left(Strafe)</th>
+                    <th colspan="3">A</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Move Right(Strafe)</th>
+                    <th colspan="3">D</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Sprint(Move Quickly)</th>
+                    <th colspan="3">Shift</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Jump</th>
+                    <th colspan="3">Space</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Duck</th>
+                    <th colspan="3">CTRL</th>
+                </tr>
+                <tr>
+                    <th colspan="3">COMBAT</th>
+                    <th colspan="3">KEY/BUTTON</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Primary Attack</th>
+                    <th colspan="3">Mouse1</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Secundary Attack</th>
+                    <th colspan="3">Mouse2</th>
+                </tr>
+                <tr>
+                    <th colspan="3">Reload</th>
+                    <th colspan="3">R</th>
+                </tr>
+            </thead>
+            <tbody id="Teclas_Movimiento"></tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Use Defaults</th>
+                    <th>Advanced...</th>
+                    <th>Edit Key</th>
+                    <th>Clear Key</th>
+                </tr>
+            </thead>
+            <tbody id="Opciones_Avanzadas"></tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2"> </th>
+                    <th colspan="2"> </th>
+                    <th>OK</th>
+                    <th>Cancel</th>
+                    <th>Apply</th>
+                </tr>
+            </thead>
+            <tbody id="Opciones_Especiales"></tbody>
+        </table>
+
+    <script>
+        // Array de Objetos con Los Nombres de las Opciones
+        const Opciones = [
+            {Nombre: "Gameplay"},
+            {Nombre: "Keyboard"},
+            {Nombre: "Mouse"},
+            {Nombre: "Gamepady"},
+            {Nombre: "Audio"},
+            {Nombre: "Video"}
+        ];
+
+        const Key = [
+            {Control_Key: "Move_Forward"},
+            {Control_Key: "W"},
+            {Control_Key: "Move_Back"},
+            {Control_Key: "S"},
+            {Control_Key: "Move_Left(Strafe)"},
+            {Control_Key: "A"},
+            {Control_Key: "Move_Right(Strafe)"},
+            {Control_Key: "D"},
+            {Control_Key: "Sprint(Move_Quickly)"},
+            {Control_Key: "Shift"},
+            {Control_Key: "Jump"},
+            {Control_Key: "Space"},
+            {Control_Key: "Duck"},
+            {Control_Key: "CTRL"},
+            {Control_Key: "Combat"},
+            {Control_Key: "Key/Button"},
+            {Control_Key: "Primary_Attack"},
+            {Control_Key: "Mouse1"},
+            {Control_Key: "Secundary_Attack"},
+            {Control_Key: "Mouse2"},
+            {Control_Key: "Reload"},
+            {Control_Key: "R"}
+        ];
+
+        const Advances_Options = [
+            {Advance: "Use_Defaults"},
+            {Advance: "Advanced"},
+            {Advance: "Edit_Key"},
+            {Advance: "Clear_Key"}
+        ];
+
+        const Special_Options = [
+            {Special: "Nothing_1"},
+            {Special: "Nothign_2"},
+            {Special: "OK"},
+            {Special: "Cancel"},
+            {Special: "Apply"}
+        ];
+
+
+
+        //Usando map() para crear filas de la tabla
+        const filas = Opciones.map(Opciones => `
+            <tr>
+                <td>${Opciones.Nombre}<td>
+            </tr>
+        `)
+
+        const filas_2 = Key.reduce((acc, Key, index) => {
+        if (index % 2 === 0) {
+            acc.push(`<tr>`); // Abrimos una nueva fila cada dos elementos
+        }
+        acc.push(`<td>${Key.Control_Key}</td>`);
+        if (index % 2 === 1 || index === Key.length - 1) {
+            acc.push(`</tr>`); // Cerramos la fila después de dos elementos
+        }
+        return acc;
+        }, []).join('');
+
+        const filas_3 = Advances_Options.map(Advances_Options => `
+            <tr>
+                <td>${Advances_Options.Advance}<td>
+            </tr>
+        `)
+
+        const filas_4 = Special_Options.map(Advances_Options => `
+            <tr>
+                <td>${Special_Options.Special}<td>
+            </tr>
+        `)
+
+        // Insertando las Filas en el DOM
+        document.getElementById('Lista_Opciones', 'Teclas_Movimiento').innerHTML = filas.join('Lista_Opciones') + filas_2.join('Teclas_Movimiento') + filas_3.join('Opciones_Avanzadas') + filas_4.join('Opciones_Especiales');
+    </script>
+</body>
+</html>
