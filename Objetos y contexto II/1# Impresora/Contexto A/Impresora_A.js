@@ -50,7 +50,7 @@ recargarCarga(MiliLitros); {
     console.log(`${this.marca} ${this.modelo} ha sido recargado con ${MiliLitros}ML. Total: ${this.carga}ML`);
 }
 
-const miImpresora = new Auto("Epson", "Ecotank", 0);
+const miImpresora = new Impresora("Epson", "Ecotank", 0);
 
 miImpresora.mostrarInformacion();
 miImpresora.encender(); // No se puede encender, no tiene combustible
