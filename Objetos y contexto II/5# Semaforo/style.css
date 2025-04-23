@@ -1,0 +1,46 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    font-family: Arial;
+    background-color: #f0f0f0;
+  }
+  
+  .semaforo {
+    width: 100px;
+    background-color: #333;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 0 10px #000;
+  }
+  
+  .luz {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #444;
+    margin: 0 auto;
+    transition: background-color 0.5s;
+  }
+  
+  .rojo.encendido {
+    background-color: red;
+  }
+  
+  .amarillo.encendido {
+    background-color: yellow;
+  }
+  
+  .verde.encendido {
+    background-color: limegreen;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }  
