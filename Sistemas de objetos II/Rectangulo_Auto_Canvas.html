@@ -1,0 +1,124 @@
+<!DOCTYPE html> <!-- Define el documento como HTML5 -->
+<html lang="es"> <!-- El idioma del contenido es español -->
+
+<head>
+    <meta charset="UTF-8"> <!-- Establece la codificación de caracteres como UTF-8 -->
+    <title>Canvas Rectángulo Auto</title> <!-- Título de la pestaña del navegador -->
+    <style>
+        body {
+            width: 50%;               /* Ancho del cuerpo de la página: 50% del viewport */
+            height: 50%;              /* Alto del cuerpo de la página: 50% del viewport */
+            border: 2px solid black;  /* Borde negro de 2px para visualización */
+        }
+    </style>
+</head>
+
+<body>
+<script>
+// Crea y configura el canvas
+let canvas = document.createElement('canvas'); // Crea un elemento <canvas>
+canvas.width = 937;                            // Define el ancho del canvas
+canvas.height = 400;                           // Define el alto del canvas
+document.body.appendChild(canvas);            // Agrega el canvas al body
+let ctx = canvas.getContext('2d');             // Obtiene el contexto de renderizado 2D
+
+// Clase Rectangulo que representa un "auto" visto desde arriba
+class Rectangulo {
+    constructor(x, y) {
+        this.x = x;               // Posición horizontal del centro
+        this.y = y;               // Posición vertical del centro
+        this.width = 100;         // Ancho del rectángulo (mayor -> horizontal)
+        this.height = 50;         // Alto del rectángulo (menor)
+        this.angle = 0;           // Ángulo de rotación en radianes
+        this.speed = 2;           // Velocidad del movimiento
+        this.rotationSpeed = 0.05;// Velocidad de rotación (radianes por actualización)
+    }
+
+    // Dibuja el rectángulo en su estado actual
+    draw(ctx) {
+        ctx.save(); // Guarda el estado actual del contexto
+        ctx.translate(this.x, this.y); // Traslada el origen al centro del rectángulo
+        ctx.rotate(this.angle); // Rota el sistema de coordenadas
+        ctx.fillStyle = 'blue'; // Color del rectángulo
+        ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height); // Dibuja centrado
+        ctx.restore(); // Restaura el contexto original
+    }
+
+    // Avanza en la dirección actual (hacia donde apunta el lado largo)
+    moveForward() {
+        this.x += Math.cos(this.angle) * this.speed; // Avanza en X según ángulo
+        this.y += Math.sin(this.angle) * this.speed; // Avanza en Y según ángulo
+    }
+
+    // Retrocede en la dirección actual
+    moveBackward() {
+        this.x -= Math.cos(this.angle) * this.speed; // Retrocede en X
+        this.y -= Math.sin(this.angle) * this.speed; // Retrocede en Y
+    }
+
+    // Gira en sentido antihorario
+    rotateLeft() {
+        this.angle -= this.rotationSpeed; // Disminuye el ángulo
+    }
+
+    // Gira en sentido horario
+    rotateRight() {
+        this.angle += this.rotationSpeed; // Aumenta el ángulo
+    }
+}
+
+// Clase controladora que maneja las teclas presionadas
+class RectangleController {
+    constructor(rect) {
+        this.rect = rect;              // Guarda una referencia al rectángulo
+        this.keys = {};                // Objeto para registrar teclas presionadas
+
+        // Evento que registra cuando una tecla se presiona
+        window.addEventListener('keydown', (e) => {
+            this.keys[e.code] = true;  // Marca la tecla como presionada
+        });
+
+        // Evento que registra cuando una tecla se suelta
+        window.addEventListener('keyup', (e) => {
+            this.keys[e.code] = false; // Marca la tecla como no presionada
+        });
+    }
+
+    // Actualiza el estado del rectángulo según las teclas activas
+    update() {
+        if (this.keys['ArrowUp']) this.rect.moveForward();     // Mover hacia adelante
+        if (this.keys['ArrowDown']) this.rect.moveBackward();  // Mover hacia atrás
+        if (this.keys['ArrowLeft']) this.rect.rotateLeft();    // Girar a la izquierda
+        if (this.keys['ArrowRight']) this.rect.rotateRight();  // Girar a la derecha
+    }
+}
+
+// Crea la instancia del rectángulo en el centro del canvas
+let rect = new Rectangulo(canvas.width / 2, canvas.height / 2);
+
+// Crea la instancia del controlador y le pasa el rectángulo
+let controller = new RectangleController(rect);
+
+// Borra el canvas completo
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia toda el área visible
+}
+
+// Función que se ejecuta constantemente para animar el rectángulo
+function update() {
+    clearCanvas();        // Limpia el lienzo
+    controller.update();  // Actualiza el estado del rectángulo según teclas
+    rect.draw(ctx);       // Dibuja el rectángulo actualizado
+}
+
+// Función principal que arranca la animación
+function main() {
+    setInterval(update, 16); // Ejecuta `update()` cada 16ms (~60 FPS)
+}
+
+// Ejecuta la función principal cuando la página cargue
+window.onload = main;
+
+</script>
+</body>
+</html>
