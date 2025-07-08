@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Objetos III</title>
+  <style>
+    #mainContainer {
+      display: flex;
+    }
+    #canvasContainer {
+      margin-right: 20px;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid black;
+      padding: 5px;
+    }
+    .selected {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Editor de Figuras</h1>
+
+  <label>Color: <input type="color" id="colorPicker" value="#007bff"></label><br><br>
+
+  <button onclick="createFigure('rectangle')">Crear Rectángulo</button>
+  <button onclick="createFigure('circle')">Crear Círculo</button>
+  <button onclick="createFigure('triangle')">Crear Triángulo</button>
+
+  <div id="mainContainer">
+    <div id="canvasContainer">
+      <canvas id="canvas" width="600" height="400" style="border: 1px solid black;"></canvas>
+      <p>Figura activa: <span id="activeFigureName">Ninguna</span></p>
+    </div>
+    <div>
+      <h3>Figuras:</h3>
+      <table id="figuresTable">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Aquí se agregan las figuras -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="sistema-objetos-3.js"></script>
+</body>
+</html>

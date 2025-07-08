@@ -1,0 +1,116 @@
+.Titulo {
+    align-items: center;
+    text-align: center;
+
+    font-weight: bold;
+}
+
+table {
+    align-items: center;
+    text-align: center;
+
+    width: 10%;
+}
+
+.Input {
+    align-items: center;
+    text-align: center;
+
+    width: 300px;
+    height: 30px;
+}
+
+.Numero
+{
+    color:white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 70%;
+
+    background-color: gray;
+    box-shadow: 0px 5px #252525;
+
+    width: 100px;
+    height: 30px;
+
+    border-radius: 6px;
+    border-color: #000;
+
+    text-align: center;
+}
+
+.Operador
+{
+    color:white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 70%;
+
+    background-color: gray;
+    box-shadow: 0px 5px #252525;
+
+    width: 100px;
+    height: 30px;
+
+    border-radius: 6px;
+    border-color: #000;
+
+    text-align: center;
+}
+
+.Decimal
+{
+    color:white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 70%;
+
+    background-color: gray;
+    box-shadow: 0px 5px #252525;
+
+    width: 100px;
+    height: 30px;
+
+    border-radius: 6px;
+    border-color: #000;
+
+    text-align: center;
+}
+
+.Calcular
+{
+    color:white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 70%;
+
+    background-color: rgb(30, 255, 0);
+    box-shadow: 0px 5px #1e9400;
+
+    width: 100px;
+    height: 30px;
+
+    border-radius: 6px;
+    border-color: #1e9400;
+
+    text-align: center;
+}
+
+.Boton_Borrar
+{
+    color:white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 80%;
+
+    background-color: red;
+    box-shadow: 0px 5px #BB3E22;
+
+    width: 300px;
+    height: 30px;
+
+    border-radius: 6px;
+    border-color: #BB3E22;
+
+    text-align: center;
+}
