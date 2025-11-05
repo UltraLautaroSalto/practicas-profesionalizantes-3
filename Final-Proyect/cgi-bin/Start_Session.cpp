@@ -92,7 +92,7 @@ bool Authentication(const string& UserName, const string& UserPassword, string& 
 
 // ======= INICIO DE SESIÓN CGI =======
 void Start_Session() {
-    cout << "Content-type: text/html\n\n";
+    cout << "Content-Type: text/html\r\n\r\n";
     cout << "<html><body>";
     cout << "<h2>Resultado del inicio de sesión</h2>";
 

@@ -69,7 +69,6 @@ void UserOptions::ClientOptions(string &UserActualName) {
         cout << "</form>";
     } else {
         if (option == "buscar_tienda" && store_option.empty()) {
-
             cout << "<h3 style='color:#ffaa00;'>===== Elige un Local =====</h3>";
             cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
             cout << "<p><input type='radio' name='store_option' value='Bullwinkle'> Bullwinkle Ecologic Store </p>";
@@ -80,9 +79,7 @@ void UserOptions::ClientOptions(string &UserActualName) {
             cout << "<input type='hidden' name='option' value='buscar_tienda'>";
             cout << "<br><input type='submit' value='Seleccionar Opción Tienda'>";
             cout << "</form>";
-
         } else if (option == "buscar_tienda" && !store_option.empty()) {
-
             ShowStoreProducts(UserActualName, store_option);
             cout << "</div>";
             return;
@@ -101,12 +98,16 @@ void UserOptions::ClientOptions(string &UserActualName) {
 }
 
 //Mostrar Productos de Tienda
-void UserOptions::ShowStoreProducts(string &UserActualName, string &store_option){
+void UserOptions::ShowStoreProducts(const string &UserActualName, const string &store_option){
+    cout << "<h2>DEBUG</h2>";
+    cout << "<p>store_option = [" << store_option << "]</p>";
+    cout << "<p>(Si esto aparece vacío o raro, el formulario no está enviando el valor correctamente)</p>";;
+
     string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
     string buy = getValue(query, "buy");
 
     vector<Products> productos;
-    ifstream file("data/Stores.txt");
+    ifstream file("Stores.txt");
 
     cout << "<div style='font-family:Arial;'>";
 
@@ -179,8 +180,8 @@ void UserOptions::ShowStoreProducts(string &UserActualName, string &store_option
                      << "<td>" << p.nombre << "</td>"
                      << "<td>$" << p.precio << "</td>"
                      << "<td>" << p.stock << "</td>"
-                     "<td><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-                     << "&role=Cliente&option=1&store_option=" << store_option
+                     << "<td><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
+                     << "&role=Cliente&option=buscar_tienda&store_option=" << store_option
                      << "&buy=" << p.nombre << "'>Comprar</a></td>"
                      << "</tr>";
             }
