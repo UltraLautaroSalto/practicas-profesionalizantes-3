@@ -16,7 +16,7 @@ const int MAX_ATTEMPTS = 3;
 // ======= DATOS AUTORIZADOS =======
 string Auth_Name[N]     = {"Jeremy", "Carlos", "Thomas"};
 string Auth_Password[N] = {"Client1234", "Manager4321", "Admin1111"}; 
-string Auth_Role[N]     = {"Cliente", "Manager", "Admin"}; 
+string Auth_Role[N]     = {"Cliente", "Manager", "Admin"};
 
 // ======= VARIABLES GLOBALES =======
 bool Acces = false;
@@ -104,6 +104,13 @@ void Start_Session() {
     string pass = UserOpt.getValue(query, "pass");
     string role = UserOpt.getValue(query, "role");
     string option = UserOpt.getValue(query, "option");
+
+    // ✅ Primera entrada al script → no mostrar error
+    if (query.empty()) {
+        cout << "<p>Ingrese sus credenciales para continuar.</p>";
+        cout << "<p><a href='/login.html'>Ir al Login</a></p></body></html>";
+        return;
+    }
 
     // 🔹 Nuevo: si ya viene con rol, significa que ya inició sesión.
     if (!role.empty() && role == "Cliente") {
