@@ -1,15 +1,34 @@
 #include "../include/UserOptions.hpp"
 
-// Estructura auxiliar para guardar los productos
 struct Products {
     string nombre;
     int precio;
     int stock;
+}; 
+
+const int B = 3;
+
+Products Bullwinkle_Store[B] = {
+{"Gaseosa Coca Cola 1L", 1200, 300},
+{"Cereal 100 Gramos", 600, 240},
+{"Pan de Maiz 1KG", 700, 390}
+};
+
+Products ElChips_Store[B] = {
+{"Papitas Sabor Jamon 500g",1400,200},
+{"Gaseosa Sprite 1L",1800,300},
+{"Coles de Brucela 1Kg", 700, 390}
+};
+
+Products Rustis_Store[B] = {
+{"Hamburguesa Familiar 1u",3500,500},
+{"Pan Artesanal 1Kg",800,200},
+{"Bolsa de Porotos 500g", 700, 390}
 };
 
 // Redirige al menú correcto según el rol
 void UserOptions::RedirectUser(string &UserActualRol, string &UserActualName) {
-    if (UserActualRol == "Cliente" || UserActualRol == "Client") {
+    if (UserActualRol == "Cliente") {
         ClientOptions(UserActualName);
     } else if (UserActualRol == "Manager") {
         ManagerOptions(UserActualName);
@@ -29,36 +48,17 @@ string UserOptions::getValue(const string& data, const string& key) {
     return data.substr(start, end - start);
 }
 
-// ===================== CLIENTE =====================
-string decodeURL(const string &s) {
-    string result;
-    char ch;
-    int i, ii;
-    for (i=0; i<s.length(); i++) {
-        if (int(s[i])==37) { // %
-            sscanf(s.substr(i+1,2).c_str(), "%x", &ii);
-            ch=static_cast<char>(ii);
-            result+=ch;
-            i=i+2;
-        } else {
-            result+=s[i];
-        }
-    }
-    return result;
-}
-
-void UserOptions::ClientOptions(string &UserActualName) {
+//////////////////////////////////////////////////////// OPCIONES DE CLIENTE ////////////////////////////////////////////////////////
+void UserOptions::ClientOptions(string &UserActualName){
     string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
+    cout << "<p style='color:red;'>" << query << "</p>";
     string option = getValue(query, "option");
-    string store_option = getValue(query, "store_option");
-
-    store_option = decodeURL(store_option);
 
     cout << "<div style='font-family:Arial;'>";
     cout << "<h2 style='color:green;'> Bienvenido Cliente <b>" << UserActualName << "</b>!</h2>";
     cout << "<hr>";
 
-    if (option.empty()) {
+    if (option.empty()){
         cout << "<h3 style='color:#ffaa00;'>===== OPCIONES DE USUARIO =====</h3>";
         cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
         cout << "<p><input type='radio' name='option' value='buscar_tienda'> Buscar Tienda</p>";
@@ -68,212 +68,84 @@ void UserOptions::ClientOptions(string &UserActualName) {
         cout << "<br><input type='submit' value='Seleccionar Opción'>";
         cout << "</form>";
     } else {
-        if (option == "buscar_tienda" && store_option.empty()) {
-            cout << "<h3 style='color:#ffaa00;'>===== Elige un Local =====</h3>";
-            cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
-            cout << "<p><input type='radio' name='store_option' value='Bullwinkle'> Bullwinkle Ecologic Store </p>";
-            cout << "<p><input type='radio' name='store_option' value='Chips'> El Chips 24/7 </p>";
-            cout << "<p><input type='radio' name='store_option' value='Rustis'> Rustis Family Mall </p>";
-            cout << "<input type='hidden' name='user' value='" << UserActualName << "'>";
-            cout << "<input type='hidden' name='role' value='Cliente'>";
-            cout << "<input type='hidden' name='option' value='buscar_tienda'>";
-            cout << "<br><input type='submit' value='Seleccionar Opción Tienda'>";
-            cout << "</form>";
-        } else if (option == "buscar_tienda" && !store_option.empty()) {
-            ShowStoreProducts(UserActualName, store_option);
+        if (option == "buscar_tienda"){
+            SearchStore(UserActualName, query);
             cout << "</div>";
-            return;
-
         } else if (option == "salir") {
-
             cout << "<p> Gracias por usar la aplicación. ¡Hasta pronto!</p>";
-
         } else {
             cout << "<p style='color:red;'> Opción inválida.</p>";
         }
-
-        cout << "<p><a href='/login.html'>Volver al Inicio</a></p>";
-        cout << "</div>";
     }
 }
 
-//Mostrar Productos de Tienda
-void UserOptions::ShowStoreProducts(const string &UserActualName, const string &store_option){
-    cout << "<h2>DEBUG</h2>";
-    cout << "<p>store_option = [" << store_option << "]</p>";
-    cout << "<p>(Si esto aparece vacío o raro, el formulario no está enviando el valor correctamente)</p>";;
+void UserOptions::SearchStore(string &UserActualName, string &query){
+    string store_select = getValue(query, "store_select");
 
+    cout << "<h3 style='color:#ffaa00;'>===== OPCIONES DE USUARIO =====</h3>";
+    cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
+    cout << "<p><input type='radio' name='store_select' value='1'> Bullwinkle Ecologic Store </p>";
+    cout << "<p><input type='radio' name='store_select' value='2'> El Chips 24/7 </p>";
+    cout << "<p><input type='radio' name='store_select' value='3'> Rustis Family Mall </p>";
+    cout << "<p><input type='radio' name='store_select' value='4'> Volver a Opciones</p>";
+    cout << "<input type='hidden' name='user' value='" << UserActualName << "'>";
+    cout << "<input type='hidden' name='role' value='Cliente'>";
+    cout << "<input type='hidden' name='option' value='buscar_tienda'>";
+    cout << "<br><input type='submit' value='Seleccionar Opción Tienda'>";
+    cout << "<p><a href='/login.html'>Cerrar sesión</a></p>";
+    cout << "</form>";
+    if (!store_select.empty() && store_select != "4"){
+        int store_selectt = stoi(store_select);
+        ShowStoreProducts(UserActualName, store_selectt);
+        cout << "</div>";
+    } else if (store_select == "4") {
+        // Volver a ClientOptions
+        cout << "Content-Type: text/html\n\n";
+        cout << "<meta http-equiv='refresh' content='0; url=/cgi-bin/Start_Session.cgi?role=Cliente&user=" 
+            << UserActualName << "'>";
+        return;
+    } else {
+        cout << "<p style='color:red;'> Opción inválida.</p>";
+    }
+}
+
+void UserOptions::ShowStoreProducts(const string &UserActualName, int &store_selectt){
     string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
     string buy = getValue(query, "buy");
 
     vector<Products> productos;
-    ifstream file("Stores.txt");
 
     cout << "<div style='font-family:Arial;'>";
+    cout << "<h3 style='color:#ffaa00;'>===== PRODUCTOS DE TIENDA =====</h3>";
 
-    if (!file.is_open()) {
-        cout << "<p style='color:red;'>No se pudo abrir Stores.txt.</p>";
-        cout << "<p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Cliente'>Volver al menú</a></p></div>";
-        return;
-    }
-
-    string linea;
-    bool tienda_encontrada = false;
-    string tiendaClave = store_option + ":";
-
-    // Buscar la tienda
-    while (getline(file, linea)) {
-
-        // Encontramos la sección donde empieza la tienda
-        if (linea == tiendaClave) {
-            tienda_encontrada = true;
-            continue;
+    if(store_selectt == 1){
+        cout << "<h3 style='color:#ffaa00;'> 'El Chips 24/7'</h3>"; 
+        for(int i = 0; i < B; i++){
+            cout << "- PRODUCTO: " << Bullwinkle_Store[i].nombre << "<br>- STOCK:" << Bullwinkle_Store[i].stock << "<br>- PRECIO:" << Bullwinkle_Store[i].precio << "<br><br>";
         }
-
-        // Si ya estamos dentro de la tienda, leemos productos
-        if (tienda_encontrada) {
-
-            // Si llegamos a la línea separadora, terminamos
-            if (linea.find("--------------------------------------------") != string::npos)
-                break;
-
-            stringstream ss(linea);
-            string nombre, precioStr, stockStr;
-
-            getline(ss, nombre, ',');
-            getline(ss, precioStr, ',');
-            getline(ss, stockStr, ',');
-
-            if (!nombre.empty() && !precioStr.empty() && !stockStr.empty()) {
-                Products p;
-                p.nombre = nombre;
-                p.precio = stoi(precioStr);
-                p.stock = stoi(stockStr);
-                productos.push_back(p);
-            }
+    } else if (store_selectt == 2){
+        cout << "<h3 style='color:#ffaa00;'> 'Bullwinkle Ecologic Store'</h3>"; 
+        for(int i = 0; i < B; i++){
+            cout << "- PRODUCTO: " << ElChips_Store[i].nombre  << "<br>- STOCK:" << ElChips_Store[i].stock  << "<br>- PRECIO:" << ElChips_Store[i].precio << "<br><br>";
         }
-    }
-
-    file.close();
-
-    // Si la tienda no existe en el archivo
-    if (!tienda_encontrada) {
-        cout << "<p style='color:red;'>No se encontró la tienda solicitada en Stores.txt</p>";
-        cout << "<p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Cliente'>Volver al menú</a></p></div>";
-        return;
-    }
-
-    // Mostrar tabla o mensaje
-    if (buy.empty()) {
-        cout << "<h2>🛍️ Productos disponibles en la tienda: " << store_option << "</h2>";
-
-        if (productos.empty()) {
-            cout << "<p>No hay productos disponibles en este momento.</p>";
-        } else {
-            cout << "<table border='1' cellpadding='5' cellspacing='0'>"
-                 << "<tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Acción</th></tr>";
-
-            for (auto &p : productos) {
-                cout << "<tr>"
-                     << "<td>" << p.nombre << "</td>"
-                     << "<td>$" << p.precio << "</td>"
-                     << "<td>" << p.stock << "</td>"
-                     << "<td><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-                     << "&role=Cliente&option=buscar_tienda&store_option=" << store_option
-                     << "&buy=" << p.nombre << "'>Comprar</a></td>"
-                     << "</tr>";
-            }
-            cout << "</table>";
+    } else if(store_selectt == 3){
+        cout << "<h3 style='color:#ffaa00;'> 'Rustis Family Mall'</h3>";
+        for(int i = 0; i < B; i++){
+            cout << "- PRODUCTO: " << Rustis_Store[i].nombre << "<br>- STOCK:" << Rustis_Store[i].stock << "<br>- PRECIO:" << Rustis_Store[i].precio << "<br><br>";
         }
-
-        cout << "<hr><p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Cliente'>Volver al menú</a></p>";
-
     } else {
-
-        cout << "<h3>🛒 Compra realizada:</h3>";
-        cout << "<p>Has elegido comprar el producto: <b>" << buy << "</b></p>";
-        cout << "<p>Gracias por tu compra!</p>";
-
-        cout << "<p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Cliente'>Volver al menú</a></p>";
+        cout << "Opcion Seleccionada Invalida" << endl;
     }
-
-    cout << "</div>";
 }
 
-// ===================== MANAGER =====================
-void UserOptions::ManagerOptions(string &UserActualName) {
-    string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
-    string option = getValue(query, "option");
+//////////////////////////////////////////////////////// OPCIONES DE MANAGER ////////////////////////////////////////////////////////
 
-    cout << "<div style='font-family:Arial;'>";
-    cout << "<h2 style='color:green;'>✅ Bienvenido Manager <b>" << UserActualName << "</b>!</h2>";
-    cout << "<hr>";
-
-    if (option.empty()) {
-        cout << "<h3 style='color:#ffaa00;'>===== OPCIONES DE MANAGER =====</h3>";
-        cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
-        cout << "<p><input type='radio' name='option' value='1'> Administrar Tienda</p>";
-        cout << "<p><input type='radio' name='option' value='2'> Añadir Producto</p>";
-        cout << "<p><input type='radio' name='option' value='3'> Modificar Producto</p>";
-        cout << "<p><input type='radio' name='option' value='4'> Eliminar Producto</p>";
-        cout << "<p><input type='radio' name='option' value='5'> Activar/Desactivar Evento Especial</p>";
-        cout << "<p><input type='radio' name='option' value='6'> Salir</p>";
-        cout << "<input type='hidden' name='user' value='" << UserActualName << "'>";
-        cout << "<input type='hidden' name='role' value='Manager'>";
-        cout << "<br><input type='submit' value='Seleccionar Opción'>";
-        cout << "</form>";
-    } else {
-        cout << "<h3>Resultado:</h3>";
-        if (option == "1") cout << "<p>⚙️ Administrar Tienda aún no disponible.</p>";
-        else if (option == "2") cout << "<p>🧩 Añadir Producto aún no disponible.</p>";
-        else if (option == "3") cout << "<p>✏️ Modificar Producto aún no disponible.</p>";
-        else if (option == "4") cout << "<p>🗑️ Eliminar Producto aún no disponible.</p>";
-        else if (option == "5") cout << "<p>🎉 Evento Especial aún no disponible.</p>";
-        else if (option == "6") cout << "<p>👋 Gracias por usar la aplicación. ¡Hasta pronto!</p>";
-        else cout << "<p style='color:red;'>❌ Opción inválida.</p>";
-
-        cout << "<p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Manager'>Volver al menú</a></p>";
-    }
-
-    cout << "<p><a href='/login.html'>Volver al Inicio</a></p>";
-    cout << "</div>";
+void UserOptions::ManagerOptions(string &UserActualName){
+    cout << "Trabajando en esta funcion" << endl;
 }
 
-// ===================== ADMIN =====================
-void UserOptions::AdminOptions(string &UserActualName) {
-    string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
-    string option = getValue(query, "option");
+//////////////////////////////////////////////////////// OPCIONES DE ADMIN ////////////////////////////////////////////////////////
 
-    cout << "<div style='font-family:Arial;'>";
-    cout << "<h2 style='color:green;'>✅ Bienvenido Administrador <b>" << UserActualName << "</b>!</h2>";
-    cout << "<hr>";
-
-    if (option.empty()) {
-        cout << "<h3 style='color:#ffaa00;'>===== OPCIONES DE ADMINISTRACIÓN =====</h3>";
-        cout << "<form action='/cgi-bin/Start_Session.cgi' method='GET'>";
-        cout << "<p><input type='radio' name='option' value='1'> Administrar Tienda Específica</p>";
-        cout << "<p><input type='radio' name='option' value='2'> Cambiar Nombre/Password/Rol de una Cuenta</p>";
-        cout << "<p><input type='radio' name='option' value='3'> Salir</p>";
-        cout << "<input type='hidden' name='user' value='" << UserActualName << "'>";
-        cout << "<input type='hidden' name='role' value='Admin'>";
-        cout << "<br><input type='submit' value='Seleccionar Opción'>";
-        cout << "</form>";
-    } else {
-        cout << "<h3>Resultado:</h3>";
-        if (option == "1") cout << "<p>🏪 Administración de tienda específica aún no disponible.</p>";
-        else if (option == "2") cout << "<p>👤 Edición de cuentas aún no disponible.</p>";
-        else if (option == "3") cout << "<p>👋 Gracias por usar la aplicación. ¡Hasta pronto!</p>";
-        else cout << "<p style='color:red;'>❌ Opción inválida.</p>";
-
-        cout << "<p><a href='/cgi-bin/Start_Session.cgi?user=" << UserActualName
-             << "&role=Admin'>Volver al menú</a></p>";
-    }
-
-    cout << "<p><a href='/login.html'>Volver al Inicio</a></p>";
-    cout << "</div>";
+void UserOptions::AdminOptions(string &UserActualName){
+    cout << "Seguimos Trabajando Acá, no viste la señal de antes?" << endl;
 }

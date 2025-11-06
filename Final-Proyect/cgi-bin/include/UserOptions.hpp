@@ -25,7 +25,8 @@ public:
     // Menús para cada tipo de usuario
     // Opciones de Cliente
     void ClientOptions(string &UserActualName);
-    void ShowStoreProducts(const string &UserActualName, const string &store_option);
+    void SearchStore(string &UserActualName, string &query);
+    void ShowStoreProducts(const string &UserActualName, int &store_option);
     //////////////////////////////////////////////////////////////////////////////////
     void ManagerOptions(string &UserActualName);
     void AdminOptions(string &UserActualName);
