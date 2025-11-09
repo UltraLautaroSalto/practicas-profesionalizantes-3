@@ -10,13 +10,13 @@ using namespace std;
 namespace fs = std::filesystem;
 
 // ======= CONFIGURACIÓN =======
-const int N = 3;
+const int N = 6;
 const int MAX_ATTEMPTS = 3;
 
 // ======= DATOS AUTORIZADOS =======
-string Auth_Name[N]     = {"Jeremy", "Carlos", "Thomas"};
-string Auth_Password[N] = {"Client1234", "Manager4321", "Admin1111"}; 
-string Auth_Role[N]     = {"Cliente", "Manager", "Admin"};
+string Auth_Name[N]     = {"Jeremy", "Carlos", "Raul", "Mike" ,"Thomas"};
+string Auth_Password[N] = {"Client1234", "Rex4321", "Coco1122", "Mono2211","Admin1111"}; 
+string Auth_Role[N]     = {"Cliente", "Manager", "Manager", "Manager", "Admin"};
 
 // ======= VARIABLES GLOBALES =======
 bool Acces = false;
@@ -97,7 +97,7 @@ void Start_Session() {
     cout << "<h2>Resultado del inicio de sesión</h2>";
 
     
-    UserOptions UserOpt; // ya lo tenés creado más arriba
+    UserOptions UserOpt;
     // Obtener los datos enviados desde el formulario
     string query = getenv("QUERY_STRING") ? getenv("QUERY_STRING") : "";
     string user = UserOpt.getValue(query, "user");
@@ -113,11 +113,21 @@ void Start_Session() {
     }
 
     // 🔹 Nuevo: si ya viene con rol, significa que ya inició sesión.
-    if (!role.empty() && role == "Cliente") {
-        UserOpt.RedirectUser(role, user);
+    /* if (!role.empty()) {
+        UserOpt.RedirectUser(role, user, pass);
+        return;
+    }*/
+
+    if (!role.empty() && role == "Cliente"){
+        UserOpt.ClientOptions(user);
+        return;
+    } else if (!role.empty() && role == "Manager"){
+        UserOpt.ManagerOptions(user, pass);
+        return;
+    } else if (!role.empty() && role == "Admin"){
+        UserOpt.AdminOptions(user);
         return;
     }
-
 
     if (user.empty() || pass.empty()) {
         cout << "<p style='color:orange;'>⚠️ Por favor complete ambos campos.</p>";
@@ -141,7 +151,7 @@ void Start_Session() {
         Acces = true;
 
         // Redirigir según el rol
-        UserOpt.RedirectUser(role, user);
+        UserOpt.RedirectUser(role, user, pass);
 
         cout << "<p><a href='/login.html'>Cerrar sesión</a></p>";
     } else {
