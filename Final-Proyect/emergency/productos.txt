@@ -1,0 +1,3 @@
+Lavandina;250;0
+Detergente;300;25
+Jabón en polvo;900;12
