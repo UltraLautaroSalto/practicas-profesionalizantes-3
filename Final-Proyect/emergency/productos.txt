@@ -1,3 +1,4 @@
-Lavandina;250;0
-Detergente;300;25
-Jabón en polvo;900;12
+Lavandina;150;40
+Detergente;300;240
+Jabón en polvo;900;1190
+Mayonesa;1000;230

@@ -48,17 +48,28 @@ app.get("/productos", (req, res) => {
 // Agregar producto (solo Admin)
 app.post("/agregarProducto", (req, res) => {
     const { nombre, precio, stock } = req.body;
-    if (!nombre || !precio || !stock) {
-        return res.status(400).send("Faltan datos");
-    }
-    const linea = `${nombre};${precio};${stock}\n`;
+    const linea = `${nombre};${precio};${stock}`;
 
-    fs.appendFile("productos.txt", linea, (err) => {
+    fs.readFile("productos.txt", "utf8", (err, data) => {
         if (err) {
-            console.error("Error agregando producto:", err);
-            return res.status(500).send("Error");
+            if (err.code === "ENOENT") {
+                fs.writeFile("productos.txt", linea + "\n", (err2) => {
+                    if (err2) return res.status(500).send("Error");
+                    return res.send("OK");
+                });
+            } else {
+                return res.status(500).send("Error");
+            }
+            return;
         }
-        res.send("OK");
+
+        const needsPrefix = data.length > 0 && !data.endsWith("\n");
+        const toAppend = (needsPrefix ? "\n" : "") + linea + "\n";
+
+        fs.appendFile("productos.txt", toAppend, (err2) => {
+            if (err2) return res.status(500).send("Error");
+            res.send("OK");
+        });
     });
 });
 
@@ -119,6 +130,74 @@ app.post("/actualizarStock", (req, res) => {
             }
             res.send("OK");
         });
+    });
+});
+
+// Registrar una compra en el historial
+app.post("/registrarCompra", (req, res) => {
+    const { usuario, producto, cantidad } = req.body;
+
+    if (!usuario || !producto || !cantidad) {
+        return res.status(400).send("Faltan datos (usuario/producto/cantidad).");
+    }
+
+    const fecha = new Date().toLocaleString("es-AR");
+    const linea = `${usuario};${producto};${cantidad};${fecha}\n`;
+
+    fs.appendFile("historial.txt", linea, (err) => {
+        if (err) {
+            console.error("Error al escribir historial:", err);
+            return res.status(500).send("Error al registrar compra");
+        }
+        res.send("OK");
+    });
+});
+
+// Eliminar producto
+app.post("/eliminarProducto", (req, res) => {
+    const { nombre } = req.body;
+
+    fs.readFile("productos.txt", "utf8", (err, data) => {
+        if (err) return res.status(500).send("Error leyendo archivo");
+
+        const nuevas = data.split("\n").filter(l => {
+            const [n] = l.split(";");
+            return n && n.trim() !== nombre;
+        });
+
+        fs.writeFile("productos.txt", nuevas.join("\n"), err2 => {
+            if (err2) return res.status(500).send("Error guardando archivo");
+            res.send("OK");
+        });
+    });
+});
+
+// Modificar producto
+app.post("/modificarProducto", (req, res) => {
+    const { nombre, precio, stock } = req.body;
+
+    fs.readFile("productos.txt", "utf8", (err, data) => {
+        if (err) return res.status(500).send("Error leyendo archivo");
+
+        let lineas = data.trim().split("\n").map(linea => {
+            const [n, p, s] = linea.split(";");
+            if (n === nombre) return `${n};${precio};${stock}`;
+            return linea;
+        });
+
+        fs.writeFile("productos.txt", lineas.join("\n") + "\n", err2 => {
+            if (err2) return res.status(500).send("Error guardando cambios");
+            res.send("OK");
+        });
+    });
+});
+
+
+// Obtener historial de compras (todo el archivo)
+app.get("/historial", (req, res) => {
+    fs.readFile("historial.txt", "utf8", (err, data) => {
+        if (err) return res.send("");
+        res.send(data);
     });
 });
 

@@ -1,3 +1,4 @@
+//////////////////////////////////////////////// OPCIONES DE SECION ////////////////////////////////////////////////
 // Mostrar secciones
 function mostrarRegistro() {
     document.getElementById("menu").style.display = "none";
@@ -69,6 +70,7 @@ function iniciarSesion() {
             }
 
             if (encontrado) {
+                sessionStorage.setItem("usuarioActual", user);
                 mostrarMenuPorRol(rol);
             } else {
                 alert("Usuario o contraseña incorrectos.");
@@ -80,6 +82,7 @@ function iniciarSesion() {
         });
 }
 
+//////////////////////////////////////////////// OPCIONES DE ROL ////////////////////////////////////////////////
 function mostrarMenuPorRol(rol) {
     document.getElementById("menu").style.display = "none";
     document.getElementById("registro").style.display = "none";
@@ -126,7 +129,10 @@ function abrirPantalla(rol) {
 }
 
 function volverMenuPorRol() {
-    document.getElementById("contenido").innerHTML = "";
+    document.getElementById("pantallaVendedor").style.display = "none";
+    document.getElementById("pantallaCliente").style.display = "none";
+    document.getElementById("pantallaAdmin").style.display = "none";
+
     document.getElementById("menuRol").style.display = "block";
 }
 
@@ -142,130 +148,168 @@ function cerrarSesion() {
     volverMenu(); // vuelve al menú principal
 }
 
-function mostrarGestionProductos() {
-    document.getElementById("pantallaAdmin").style.display = "none";
-    document.getElementById("gestionProductos").style.display = "block";
-}
-
 function cerrarGestionProductos() {
     document.getElementById("gestionProductos").style.display = "none";
     document.getElementById("pantallaAdmin").style.display = "block";
 }
 
-function agregarProducto() {
-    let nombre = document.getElementById("prod_nombre").value;
-    let precio = document.getElementById("prod_precio").value;
-    let stock = document.getElementById("prod_stock").value;
+//////////////////////////////////////////////// OPCIONES DE CLIENTE ////////////////////////////////////////////////
 
-    if (nombre === "" || precio === "" || stock === "") {
-        alert("Completa todos los campos.");
+function mostrarPanelCliente(){
+    document.getElementById("menuRol").style.display = "none";
+    const pantalla = document.getElementById("pantallaCliente");
+
+    pantalla.innerHTML = `
+        <h2>Panel Del Cliente</h2>
+        <button onclick="mostrarComprarCliente()">Comprar Productos</button><br><br>
+        <button onclick="mostrarHistorial()">Ver Historial</button><br><br>
+        <button onclick="cerrarSubpantalla()">Volver</button>
+    `;
+
+    pantalla.style.display = "block";
+}
+
+function mostrarComprarCliente() {
+    cargarProductos(productos => {
+        const pantalla = document.getElementById("pantallaCliente");
+
+        let html = `
+            <h3>Comprar Productos</h3>
+            <label>Producto:</label><br>
+            <select id="compra_producto"></select><br><br>
+
+            <label>Cantidad:</label><br>
+            <input type="number" id="compra_cantidad" min="1" value="1"><br><br>
+
+            <button onclick="registrarCompraCliente()">Comprar</button>
+            <button onclick="cerrarSubpantalla()">Volver</button>
+
+            <div id="compra_result" style="margin-top:10px;"></div>
+
+            <hr>
+            <h3>Listado de Productos</h3>
+            <table border="1" cellpadding="5">
+                <tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>
+        `;
+
+        productos.forEach(p => {
+            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
+        });
+
+        html += `</table>`;
+
+        pantalla.innerHTML = html;
+        pantalla.style.display = "block";
+        document.getElementById("menuRol").style.display = "none";
+
+        // Llenar el select con los productos disponibles
+        const select = document.getElementById("compra_producto");
+        productos.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p.nombre;
+            opt.textContent = `${p.nombre} (Stock: ${p.stock}) - $${p.precio}`;
+            select.appendChild(opt);
+        });
+    });
+}
+
+function registrarCompraCliente() {
+    const producto = document.getElementById("compra_producto").value;
+    const cantidad = parseInt(document.getElementById("compra_cantidad").value, 10);
+    const resultado = document.getElementById("compra_result");
+
+    if (!producto) {
+        alert("Seleccioná un producto.");
+        return;
+    }
+    if (!cantidad || cantidad <= 0) {
+        alert("Ingresá una cantidad válida.");
         return;
     }
 
-    fetch("/agregarProducto", {
+    const usuario = sessionStorage.getItem("usuarioActual");
+    if (!usuario) {
+        alert("No se encontró el usuario logueado. Volvé a iniciar sesión.");
+        return;
+    }
+
+    // 1) Actualizar stock
+    fetch("/actualizarStock", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ nombre, precio, stock })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre: producto, cantidad: cantidad })
     })
-    .then(res => res.text())
-    .then(resp => {
-        if (resp === "OK") {
-            alert("Producto agregado correctamente.");
-            document.getElementById("prod_nombre").value = "";
-            document.getElementById("prod_precio").value = "";
-            document.getElementById("prod_stock").value = "";
+    .then(res => res.text().then(text => ({ status: res.status, text })))
+    .then(({ status, text }) => {
+        if (status === 200 && text === "OK") {
+            // 2) Registrar en historial
+            return fetch("/registrarCompra", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ usuario, producto, cantidad })
+            })
+            .then(res => res.text())
+            .then(respText => ({ stockResp: {status, text}, histResp: respText }));
         } else {
-            alert("Error agregando producto: " + resp);
+            throw new Error("Error al actualizar stock: " + text);
+        }
+    })
+    .then(({ stockResp, histResp }) => {
+        if (histResp === "OK") {
+            resultado.style.color = "green";
+            resultado.innerText = "Compra registrada correctamente.";
+            mostrarComprarCliente(); // refrescar vista y stock
+        } else {
+            resultado.style.color = "red";
+            resultado.innerText = "Error al registrar en historial: " + histResp;
         }
     })
     .catch(err => {
         console.error(err);
-        alert("Error de red al agregar producto.");
+        alert("Error al procesar la compra. Mirá la consola y la pestaña Network para detalles.");
     });
 }
 
-function mostrarProductosAdmin() {
-    cargarProductos(productos => {
-        let html = "<h3>Listado de productos</h3><table border='1' cellpadding='5'>";
-        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
+function mostrarHistorial() {
+    const usuario = sessionStorage.getItem("usuarioActual");
+    const pantalla = document.getElementById("pantallaCliente");
 
-        productos.forEach(p => {
-            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
-        });
-
-        html += "</table><br><button onclick='cerrarSubpantalla()'>Volver</button>";
-
-        document.getElementById("pantallaAdmin").innerHTML = html;
-        document.getElementById("pantallaAdmin").style.display = "block";
-        document.getElementById("menuRol").style.display = "none";
-    });
-}
-
-function mostrarCatalogo() {
-    const pantalla = document.getElementById("pantallaVendedor");
-
-    pantalla.innerHTML = `
-        <h2>Catálogo</h2>
-        <div id="catalogo_lista"></div>
-        <button onclick="mostrarPanelVendedor()">Volver</button>
-    `;
-
-    cargarProductos(productos => {
-        let html = "<table border='1' cellpadding='5'>";
-        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
-
-        productos.forEach(p => {
-            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
-        });
-
-        html += "</table>";
-
-        document.getElementById("catalogo_lista").innerHTML = html;
-    });
-}
-
-function mostrarComprar() {
-    cargarProductos(productos => {
-        let html = "<h3>Comprar Productos</h3><table border='1' cellpadding='5'>";
-        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
-
-        productos.forEach(p => {
-            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
-        });
-
-        html += "</table><br><button onclick='cerrarSubpantalla()'>Volver</button>";
-
-        document.getElementById("pantallaCliente").innerHTML = html;
-        document.getElementById("pantallaCliente").style.display = "block";
-        document.getElementById("menuRol").style.display = "none";
-    });
-}
-
-function cargarProductos(callback) {
-    // cargamos el archivo estático productos.txt
-    fetch("/productos.txt")
+    fetch("/historial")
         .then(res => res.text())
         .then(data => {
-            let productos = [];
+            let lineas = data.trim().split("\n");
+            let historialUsuario = lineas
+                .map(l => l.split(";"))
+                .filter(c => c[0] === usuario); // filtrar por usuario
 
-            if (data.trim() !== "") {
-                let lineas = data.trim().split("\n");
-                for (let linea of lineas) {
-                    if (!linea.trim()) continue;
-                    let [nombre, precio, stock] = linea.split(";");
-                    productos.push({ nombre: nombre.trim(), precio: precio.trim(), stock: stock.trim() });
-                }
+            let html = `<h3>Historial de Compras de ${usuario}</h3>`;
+
+            if (historialUsuario.length === 0) {
+                html += `<p>No tenés compras registradas todavía.</p>`;
+            } else {
+                html += "<table border='1' cellpadding='5'>";
+                html += "<tr><th>Producto</th><th>Cantidad</th><th>Fecha</th></tr>";
+
+                historialUsuario.forEach(([u, prod, cant, fecha]) => {
+                    html += `<tr><td>${prod}</td><td>${cant}</td><td>${fecha}</td></tr>`;
+                });
+
+                html += "</table>";
             }
 
-            callback(productos);
+            html += `<br><button onclick="cerrarSubpantalla()">Volver</button>`;
+
+            pantalla.innerHTML = html;
+            pantalla.style.display = "block";
+            document.getElementById("menuRol").style.display = "none";
         })
         .catch(err => {
-            console.error("Error cargando productos:", err);
-            callback([]);
+            console.error("Error leyendo historial:", err);
+            alert("No se pudo cargar el historial de compras.");
         });
 }
 
-// ---------------- VENDEDOR: registrar venta con select ----------------
+//////////////////////////////////////////////// OPCIONES DE VENDEDOR ////////////////////////////////////////////////
 
 function mostrarPanelVendedor() {
     document.getElementById("menuRol").style.display = "none";
@@ -327,7 +371,7 @@ function registrarVenta() {
         return;
     }
 
-    // Llamamos al endpoint que actualiza el stock
+    // Se Llama al endpoint que actualiza el stock
     fetch("/actualizarStock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -352,12 +396,292 @@ function registrarVenta() {
     });
 }
 
+// Funcion para Mostrar el Catalogo
+function mostrarCatalogo() {
+    const pantalla = document.getElementById("pantallaVendedor");
+
+    pantalla.innerHTML = `
+        <h2>Catálogo</h2>
+        <div id="catalogo_lista"></div>
+        <button onclick="mostrarPanelVendedor()">Volver</button>
+    `;
+
+    cargarProductos(productos => {
+        let html = "<table border='1' cellpadding='5'>";
+        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
+
+        productos.forEach(p => {
+            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
+        });
+
+        html += "</table>";
+
+        document.getElementById("catalogo_lista").innerHTML = html;
+    });
+}
+
 function cerrarRegistrarVenta() {
     document.getElementById("registrarVenta").style.display = "none";
     mostrarPanelVendedor();
 }
 
-// Salir
+function cargarProductos(callback) {
+    // Se Carga el archivo estático productos.txt
+    fetch("/productos.txt")
+        .then(res => res.text())
+        .then(data => {
+            let productos = [];
+
+            if (data.trim() !== "") {
+                let lineas = data.trim().split("\n");
+                for (let linea of lineas) {
+                    if (!linea.trim()) continue;
+                    let [nombre, precio, stock] = linea.split(";");
+                    productos.push({ nombre: nombre.trim(), precio: precio.trim(), stock: stock.trim() });
+                }
+            }
+
+            callback(productos);
+        })
+        .catch(err => {
+            console.error("Error cargando productos:", err);
+            callback([]);
+        });
+}
+
+//////////////////////////////////////////////// OPCIONES DE ADMIN ////////////////////////////////////////////////
+function mostrarPanelAdministrador(){
+    document.getElementById("menuRol").style.display = "none";
+    const pantalla = document.getElementById("pantallaAdmin");
+
+    pantalla.innerHTML = `
+        <h2>Panel del Vendedor</h2>
+        <button onclick="mostrarGestionProductos()">Gestionar Productos</button><br><br>
+        <button onclick="mostrarProductosAdmin()">Ver Productos</button><br><br>
+        <button onclick="volverMenuPorRol()">Volver</button>
+    `;
+
+    pantalla.style.display = "block";
+}
+
+function mostrarGestionProductos() {
+    const pantalla = document.getElementById("pantallaAdmin");
+    pantalla.style.display = "block";
+    document.getElementById("menuRol").style.display = "none";
+
+    cargarProductos(productos => {
+        // Construimos la interfaz principal del panel de gestión
+        let html = `
+            <h2>Gestión de Productos</h2>
+
+            <h3>Agregar nuevo producto</h3>
+            <label>Nombre:</label><br>
+            <input type="text" id="prod_nombre"><br><br>
+            <label>Precio:</label><br>
+            <input type="number" id="prod_precio"><br><br>
+            <label>Stock:</label><br>
+            <input type="number" id="prod_stock"><br><br>
+            <button onclick="agregarProducto()">Agregar Producto</button>
+            <hr>
+
+            <h3>Productos actuales</h3>
+            <table border="1" cellpadding="5">
+                <tr><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
+        `;
+
+        productos.forEach((p, index) => {
+            html += `
+                <tr>
+                    <td>${p.nombre}</td>
+                    <td>${p.precio}</td>
+                    <td>${p.stock}</td>
+                    <td>
+                        <button onclick="editarProducto(${index})">Modificar</button>
+                        <button onclick="eliminarProducto('${p.nombre}')">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+            </table>
+            <hr>
+            <button onclick="mostrarHistorialComprasAdmin()">Ver historial de compras</button>
+            <button onclick="cerrarSubpantalla()">Volver</button>
+        `;
+
+        pantalla.innerHTML = html;
+    });
+}
+
+// Funcion para Mostrarle Los Productos al Admin
+function mostrarProductosAdmin() {
+    cargarProductos(productos => {
+        let html = "<h3>Listado de productos</h3><table border='1' cellpadding='5'>";
+        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
+
+        productos.forEach(p => {
+            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
+        });
+
+        html += "</table><br><button onclick='cerrarSubpantalla()'>Volver</button>";
+
+        document.getElementById("pantallaAdmin").innerHTML = html;
+        document.getElementById("pantallaAdmin").style.display = "block";
+        document.getElementById("menuRol").style.display = "none";
+    });
+}
+
+// Funcion Para Agregar Productos Nuevos
+function agregarProducto() {
+    let nombre = document.getElementById("prod_nombre").value;
+    let precio = document.getElementById("prod_precio").value;
+    let stock = document.getElementById("prod_stock").value;
+
+    if (nombre === "" || precio === "" || stock === "") {
+        alert("Completa todos los campos.");
+        return;
+    }
+
+    fetch("/agregarProducto", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ nombre, precio, stock })
+    })
+    .then(res => res.text())
+    .then(resp => {
+        if (resp === "OK") {
+            alert("Producto agregado correctamente.");
+            document.getElementById("prod_nombre").value = "";
+            document.getElementById("prod_precio").value = "";
+            document.getElementById("prod_stock").value = "";
+        } else {
+            alert("Error agregando producto: " + resp);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error de red al agregar producto.");
+    });
+}
+
+function eliminarProducto(nombre) {
+    if (!confirm(`¿Seguro que querés eliminar "${nombre}"?`)) return;
+
+    fetch("/eliminarProducto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre })
+    })
+    .then(res => res.text())
+    .then(resp => {
+        if (resp === "OK") {
+            alert("Producto eliminado correctamente.");
+            mostrarGestionProductos();
+        } else {
+            alert("Error eliminando producto: " + resp);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error de red al eliminar producto.");
+    });
+}
+
+function editarProducto(index) {
+    cargarProductos(productos => {
+        const producto = productos[index];
+        const nuevoPrecio = prompt(`Nuevo precio para "${producto.nombre}"`, producto.precio);
+        const nuevoStock = prompt(`Nuevo stock para "${producto.nombre}"`, producto.stock);
+
+        if (nuevoPrecio === null || nuevoStock === null) return; // canceló
+
+        fetch("/modificarProducto", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nombre: producto.nombre,
+                precio: nuevoPrecio,
+                stock: nuevoStock
+            })
+        })
+        .then(res => res.text())
+        .then(resp => {
+            if (resp === "OK") {
+                alert("Producto modificado correctamente.");
+                mostrarGestionProductos();
+            } else {
+                alert("Error al modificar producto: " + resp);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error de red al modificar producto.");
+        });
+    });
+}
+
+// Funcion Para Mostrar Las Compras Realizadas
+function mostrarComprar() {
+    cargarProductos(productos => {
+        let html = "<h3>Comprar Productos</h3><table border='1' cellpadding='5'>";
+        html += "<tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr>";
+
+        productos.forEach(p => {
+            html += `<tr><td>${p.nombre}</td><td>${p.precio}</td><td>${p.stock}</td></tr>`;
+        });
+
+        html += "</table><br><button onclick='cerrarSubpantalla()'>Volver</button>";
+
+        document.getElementById("pantallaCliente").innerHTML = html;
+        document.getElementById("pantallaCliente").style.display = "block";
+        document.getElementById("menuRol").style.display = "none";
+    });
+}
+
+function mostrarHistorialComprasAdmin() {
+    const pantalla = document.getElementById("pantallaAdmin");
+
+    fetch("/historial")
+        .then(res => res.text())
+        .then(data => {
+            let lineas = data.trim().split("\n");
+            if (!data.trim()) {
+                pantalla.innerHTML = `
+                    <h3>Historial de Compras</h3>
+                    <p>No hay compras registradas.</p>
+                    <button onclick="mostrarGestionProductos()">Volver</button>
+                `;
+                return;
+            }
+
+            let html = `
+                <h3>Historial de Compras</h3>
+                <table border="1" cellpadding="5">
+                    <tr><th>Usuario</th><th>Producto</th><th>Cantidad</th><th>Fecha</th></tr>
+            `;
+
+            lineas.forEach(linea => {
+                const [usuario, producto, cantidad, fecha] = linea.split(";");
+                html += `<tr><td>${usuario}</td><td>${producto}</td><td>${cantidad}</td><td>${fecha}</td></tr>`;
+            });
+
+            html += `
+                </table><br>
+                <button onclick="mostrarGestionProductos()">Volver</button>
+            `;
+
+            pantalla.innerHTML = html;
+        })
+        .catch(err => {
+            console.error("Error leyendo historial:", err);
+            alert("No se pudo cargar el historial.");
+        });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Funcion Para Salir
 function salir() {
     alert("Gracias por usar el sistema.");
     window.close();
