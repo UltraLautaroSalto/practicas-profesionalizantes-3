@@ -455,7 +455,7 @@ function mostrarPanelAdministrador(){
     const pantalla = document.getElementById("pantallaAdmin");
 
     pantalla.innerHTML = `
-        <h2>Panel del Vendedor</h2>
+        <h2>Panel del Admin</h2>
         <button onclick="mostrarGestionProductos()">Gestionar Productos</button><br><br>
         <button onclick="mostrarProductosAdmin()">Ver Productos</button><br><br>
         <button onclick="volverMenuPorRol()">Volver</button>
