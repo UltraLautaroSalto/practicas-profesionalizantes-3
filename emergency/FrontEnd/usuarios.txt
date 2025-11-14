@@ -1,3 +1,0 @@
-juan;1234;admin
-maria;abcd;vendedor
-pepe;pass;cliente

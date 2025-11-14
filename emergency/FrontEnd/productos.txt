@@ -1,4 +1,0 @@
-Lavandina;150;20
-Detergente;300;225
-Jabón en polvo;900;1100
-Mayonesa;1000;220
