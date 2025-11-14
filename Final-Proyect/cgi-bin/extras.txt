@@ -1,3 +1,0 @@
-Para Crear el CGI: g++ Start_Session.cpp src/UserOptions.cpp -Iinclude -o Start_Session.cgi
-
-Para Acceder a la Pagina: http://localhost/cgi-bin/Start_Session.cgi
