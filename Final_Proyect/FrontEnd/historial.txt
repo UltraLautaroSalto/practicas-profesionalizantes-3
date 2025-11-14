@@ -1,0 +1,4 @@
+pepe;Lavandina;10;12/11/2025, 03:26:43
+pepe;Mayonesa;10;12/11/2025, 06:16:54
+pepe;Detergente;15;12/11/2025, 06:17:12
+pepe;Lavandina;20;12/11/2025, 06:17:18
