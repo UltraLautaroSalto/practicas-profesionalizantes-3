@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema</title>
+</head>
+<body>
+
+    <!-- MENÚ PRINCIPAL -->
+    <div id="menu">
+        <h1 style="color:green;">--- MENÚ PRINCIPAL ---</h1>
+        <button onclick="mostrarRegistro()">Registrarse</button><br><br>
+        <button onclick="mostrarLogin()">Iniciar Sesión</button><br><br>
+        <button onclick="salir()">Salir</button>
+    </div>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div id="registro" style="display:none;">
+        <h2>Registro</h2>
+        <label>Usuario:</label><br>
+        <input type="text" id="reg_user"><br><br>
+
+        <label>Contraseña:</label><br>
+        <input type="password" id="reg_pass"><br><br>
+
+        <label>Rol:</label><br>
+        <select id="reg_rol">
+            <option value="admin">Administrador</option>
+            <option value="vendedor">Vendedor</option>
+            <option value="cliente">Cliente</option>
+        </select><br><br>
+
+        <button onclick="registrarUsuario()">Guardar</button><br><br>
+        <button onclick="volverMenu()">Volver</button>
+    </div>
+
+    <!-- FORMULARIO DE LOGIN -->
+    <div id="login" style="display:none;">
+        <h2>Inicio de Sesión</h2>
+        <label>Usuario:</label><br>
+        <input type="text" id="log_user"><br><br>
+
+        <label>Contraseña:</label><br>
+        <input type="password" id="log_pass"><br><br>
+
+        <button onclick="iniciarSesion()">Ingresar</button><br><br>
+        <button onclick="volverMenu()">Volver</button>
+    </div>
+
+    <!-- MENÚ POR ROL -->
+    <div id="menuRol" style="display:none;">
+        <h2 id="tituloRol"></h2>
+
+        <div id="opcionesRol"></div>
+
+        <br>
+        <button onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+    <div id="panelVendedor" style="display:none;"></div>
+
+    <!-- PANTALLA ADMIN -->
+    <div id="pantallaAdmin" style="display:none;">
+        <h2>Panel Administrador</h2>
+
+        <button onclick="mostrarGestionProductos()">Gestionar Productos</button><br><br>
+        <button onclick="mostrarProductosAdmin()">Ver Productos</button><br><br>
+        <button onclick="cerrarSubpantalla()">Volver</button>
+    
+        <div id="gestionProductos" style="display:none; border:1px solid #ccc; padding:10px;">
+        <h3>Gestión de Productos</h3>
+
+        <label>Nombre:</label>
+        <input type="text" id="prod_nombre"><br><br>
+
+        <label>Precio:</label>
+        <input type="number" id="prod_precio"><br><br>
+
+        <label>Stock:</label>
+        <input type="number" id="prod_stock"><br><br>
+
+        <button onclick="agregarProducto()">Agregar Producto</button><br><br>
+        <button onclick="cerrarGestionProductos()">Volver</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- PANTALLA VENDEDOR -->
+    <div id="pantallaVendedor" style="display:none;">
+        <h2>Panel Vendedor</h2>
+
+        <button onclick="mostrarRegistrarVenta()">Registrar Venta</button><br><br>
+        <button onclick="mostrarCatalogo()">Ver Catálogo</button><br><br>
+        <button onclick="mostrarLogin()">Volver</button>
+
+        <!-- FORMULARIO REGISTRAR VENTA (oculto hasta que se solicite) -->
+        <div id="registrarVenta" style="display:none; border:1px solid #ccc; padding:10px; margin-top:10px;">
+            <h3>Registrar Venta</h3>
+
+            <label>Producto:</label><br>
+            <select id="venta_producto">
+                <!-- opciones cargadas dinámicamente -->
+            </select><br><br>
+
+            <label>Cantidad:</label><br>
+            <input type="number" id="venta_cantidad" min="1" value="1"><br><br>
+
+            <button onclick="registrarVenta()">Registrar</button>
+            <button onclick="cerrarRegistrarVenta()">Volver</button>
+            <div id="venta_result" style="margin-top:8px;color:green;"></div>
+        </div>
+    </div>
+
+    <!-- PANTALLA CLIENTE -->
+    <div id="pantallaCliente" style="display:none;">
+        <h2>Panel Cliente</h2>
+
+        <button onclick="mostrarComprarCliente()">Comprar Productos</button><br><br>
+        <button onclick="mostrarHistorial()">Ver Historial</button><br><br>
+        <button onclick="cerrarSubpantalla()">Volver</button>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
