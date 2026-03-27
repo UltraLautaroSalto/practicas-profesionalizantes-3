@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<title>ACTIVIDAD DIAGNOSTICO 1</title>
+
+<link rel="stylesheet" href="style.css"/>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="es-es">
+    <h1 id="head_text">FABRICA DE RECICLAJE</h1>
+</head>
+
+<body>
+    <section id="PrincipalMenu">
+    <img alt ="Nunca habia visto tanta basura en mi vida" src="Reciclaje.jpg">
+    <p>
+        <h2>"SELECCIONE QUE DESEA HACER"</h2>
+    </p>
+
+    <p><li><button id="PMOption1">1.Ver el Stock actual</button></li></p>
+    <p><li><button id="PMOption2">2.Comprar Producto</button></li></p>
+    <p><li><button id="PMOption3">3.Vender Producto</button></li></p>
+    </section>
+    <!-- PM = Principal Menu -->
+    
+    <!-- Seccion para ver el Stock -->
+    <section id="Stock" class="oculto">
+        <table id="table" border="2"></table>
+        <p><li><button class="OptionBack">Volver Atras</button></li></p>
+        <p><li><button id="AddProducto">Añadir un Producto</button></li></p>
+    </section>
+    <!-- Seccion para ver el Stock -->
+
+    <!-- Seccion para Compras -->
+    <section id="Compras" class="oculto">
+        <h2>Seleccione que desea Comprar</h2>
+        <h3>(Seleccione la Cantidad de Unidades que desea comprar)</h3>
+        <select id="ProductoComprar">
+            <option value="Vidrio">Vidrio</option>
+            <option value="Hierro">Hierro</option>
+            <option value="Aluminio">Aluminio</option>
+            <option value="Cobre">Cobre</option>
+            <option value="Bronce">Bronce</option>
+            <option value="Carton">Cartón</option>
+            <option value="Papel">Papel</option>
+            <option value="TapasDePlastico">Tapas de Plastico</option>
+            <option value="Aceite">Aceite de Girasol</option>
+            <option value="Baterias">Baterias de Auto</option>
+        </select>
+
+        <br><br>
+
+        <label for="CantidadAComprar">Cantidad:</label>
+        <input type="number" id="CantidadAComprar" min="1">
+        <button id="ComprarProducto">Comprar</button>
+        <p id="MensajeCompra"></p>
+        <p><li><button class="OptionBack">Volver Atras</button></li></p>
+    </section>
+    <!-- Seccion para Compras -->
+
+    <!-- Seccion para Ventas -->
+    <section id="Vender" class="oculto">
+        <h2>¿Que Producto desea Vender?</h2>
+        <p><li><button class="OptionBack">Volver Atras</button></li></p>
+    </section>
+    <!-- Seccion para Ventas -->
+    
+    <script src ="backend/backend.js"></script>
+</body>
+</html>
