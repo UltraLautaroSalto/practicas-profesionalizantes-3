@@ -1,13 +1,13 @@
-let VidrioStock = 50; let VidrioPrecio = 1500;
-let HierroStock = 459; let HierroPrecio = 2500;
-let AluminioStock = 238; let AluminioPrecio = 2000;
-let CobreStock = 154; let CobrePrecio = 3500;
-let BronceStock = 375; let BroncePrecio = 5000;
-let CartonStock = 200; let CartonPrecio = 500;
-let PapelStock = 184; let PapelPrecio = 250;
-let TapasStock = 427; let TapasPrecio = 750;
-let AceiteStock = 900; let AceitePrecio = 1250;
-let BateriasStock = 45; let BateriasPrecio = 4000;
+let VidrioStock = 50; let VidrioPrecio = 1500; let VidrioOwned = 0;
+let HierroStock = 459; let HierroPrecio = 2500; let HierroOwned = 0;
+let AluminioStock = 238; let AluminioPrecio = 2000; let AluminioOwned = 0;
+let CobreStock = 154; let CobrePrecio = 3500; let CobreOwned = 0;
+let BronceStock = 375; let BroncePrecio = 5000; let BronceOwned = 0;
+let CartonStock = 200; let CartonPrecio = 500; let CartonOwned = 0;
+let PapelStock = 184; let PapelPrecio = 250; let PapelOwned = 0;
+let TapasStock = 427; let TapasPrecio = 750; let TapasOwned = 0;
+let AceiteStock = 900; let AceitePrecio = 1250; let AceiteOwned = 0;
+let BateriasStock = 45; let BateriasPrecio = 4000; let BateriasOwned = 0;
 
 const table = document.getElementById("table");
 const PrincipalMenu = document.getElementById("PrincipalMenu"); // Constantes para Ocultar
@@ -23,6 +23,11 @@ const SelectBuyProducto = document.getElementById("ProductoComprar"); // Constan
 const CantidadBuyProducto = document.getElementById("CantidadAComprar"); // Constante de la Cantidad de Producto a Comprar
 const ButtonComprarProducto = document.getElementById("ComprarProducto"); // Costante del Boton para Comprar Productos
 const MensajeCompra = document.getElementById("MensajeCompra"); // Constante que se ocupa del mensaje que sale cuando Compras Algo
+
+const SelectSellProducto = document.getElementById("ProductoVender"); // Constante del Producto Seleccionado a Vender
+const CantidadSellProducto = document.getElementById("CantidadAVender"); // Costante de la Cantidad de Producto a Vender
+const ButtonVenderProducto = document.getElementById("VenderProducto"); // Constante del Boton para Vender Productos
+const MensajeVenta = document.getElementById("MensajeVenta");  // Constante que se ocupa del mensaje que sale cuando Vendes Algo
 
 const ButtonVolver = document.querySelectorAll(".OptionBack");
 
@@ -204,33 +209,43 @@ ButtonComprarProducto.addEventListener("click", () => {
     switch(producto){
         case "Vidrio":
             VidrioStock -= cantidad;
+            VidrioOwned += cantidad;
         break;
         case "Hierro":
             HierroStock -= cantidad;
+            HierroOwned += cantidad;
         break;
         case "Aluminio":
             AluminioStock -= cantidad;
+            AluminioOwned += cantidad;
         break;
         case "Cobre":
             CobreStock -= cantidad;
+            CobreOwned += cantidad;
         break;
         case "Bronce":
             BronceStock -= cantidad;
+            BronceOwned += cantidad;
         break;
         case "Carton":
             CartonStock -= cantidad;
+            CartonOwned += cantidad;
         break;
         case "Papel":
             PapelStock -= cantidad;
+            PapelOwned += cantidad;
         break;
         case "TapasDePlastico":
             TapasStock -= cantidad;
+            TapasOwned += cantidad;
         break;
         case "Aceite":
             AceiteStock -= cantidad;
+            AceiteOwned += cantidad;
         break;
         case "Baterias":
             BateriasStock -= cantidad;
+            BateriasOwned += cantidad;
         break;
     }
 
@@ -245,6 +260,120 @@ ButtonComprarProducto.addEventListener("click", () => {
 ButtonMostrarVenta.addEventListener("click", () => {
     PrincipalMenu.classList.add("oculto");
     MostrarVentas.classList.remove("oculto");
+});
+
+ButtonVenderProducto.addEventListener("click", () => {
+    const producto = SelectSellProducto.value;
+    const cantidad = Number(CantidadAVender.value)
+
+    if(cantidad <= 0 || isNaN(cantidad)){
+        alert('Ingrese una cantidad valida');
+    }
+
+    let precio = 0;
+    let stockOwned = 0;
+    let unidad = "Kg";
+
+    switch(producto){
+        case "Vidrio":
+            stockOwned = VidrioOwned;
+            precio = VidrioPrecio;
+            unidad = "Kg";
+        break;
+        case "Hierro":
+            stockOwned = HierroOwned;
+            precio = HierroPrecio;
+            unidad = "Kg";
+        break;
+        case "Aluminio":
+            stockOwned = AluminioOwned;
+            precio = AluminioPrecio;
+            unidad = "Kg";
+        break;
+        case "Cobre":
+            stockOwned = CobreOwned;
+            precio = CobrePrecio;
+            unidad = "Kg";
+        break;
+        case "Carton":
+            stockOwned = CartonOwned;
+            precio = CartonPrecio;
+            unidad = "Kg";
+        break;
+        case "Papel":
+            stockOwned = PapelOwned;
+            precio = PapelPrecio;
+            unidad = "Kg";
+        break;
+        case "TapasDePlastico":
+            stockOwned = TapasOwned;
+            precio = TapasPrecio;
+            unidad = "Kg";
+        break;
+        case "Aceite":
+            stockOwned = AceiteOwned;
+            precio = AceitePrecio;
+            unidad = "M^3";
+        break;
+        case "Baterias":
+            stockOwned = BateriasOwned;
+            precio = BateriasPrecio;
+            unidad = "Unidad";
+        break;
+        default:
+            alert("Producto inválido");
+            return;
+    }
+
+    if (cantidad > stockOwned){
+        alert(`No hay suficiente stock. Disponible: ${stockOwned} ${unidad}`);
+        return;
+    }
+
+    switch(producto){
+        case "Vidrio":
+            VidrioStock += cantidad;
+            VidrioOwned -= cantidad;
+        break;
+        case "Hierro":
+            HierroStock += cantidad;
+            HierroOwned -= cantidad;
+        break;
+        case "Aluminio":
+            AluminioStock += cantidad;
+            AluminioOwned -= cantidad;
+        break;
+        case "Cobre":
+            CobreStock += cantidad;
+            CobreOwned -= cantidad;
+        break;
+        case "Carton":
+            CartonStock += cantidad;
+            CartonOwned -= cantidad;
+        break;
+        case "Papel":
+            PapelStock += cantidad;
+            PapelOwned -= cantidad;
+        break;
+        case "TapasDePlastico":
+            TapasStock += cantidad;
+            TapasOwned -= cantidad;
+        break;
+        case "Aceite":
+            AceiteStock += cantidad;
+            AceiteOwned -= cantidad;
+        break;
+        case "Baterias":
+            BateriasStock += cantidad;
+            BateriasOwned -= cantidad;
+        break;
+    }
+
+    const total = cantidad * precio;
+    MensajeVenta.textContent = `Venta realizada: ${cantidad} ${unidad} de ${producto}. Total: $${total}`;
+
+    RenderizarTabla();
+    CantidadSellProducto.value = "";
 });
 
 // Devuelve al Usuario a la Parte Anterior de la Pagina
