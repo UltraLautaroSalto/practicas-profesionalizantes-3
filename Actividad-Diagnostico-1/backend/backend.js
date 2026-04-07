@@ -1,23 +1,26 @@
-let VidrioStock = 50; let VidrioPrecio = 1500; let VidrioOwned = 0;
-let HierroStock = 459; let HierroPrecio = 2500; let HierroOwned = 0;
-let AluminioStock = 238; let AluminioPrecio = 2000; let AluminioOwned = 0;
-let CobreStock = 154; let CobrePrecio = 3500; let CobreOwned = 0;
-let BronceStock = 375; let BroncePrecio = 5000; let BronceOwned = 0;
-let CartonStock = 200; let CartonPrecio = 500; let CartonOwned = 0;
-let PapelStock = 184; let PapelPrecio = 250; let PapelOwned = 0;
-let TapasStock = 427; let TapasPrecio = 750; let TapasOwned = 0;
-let AceiteStock = 900; let AceitePrecio = 1250; let AceiteOwned = 0;
-let BateriasStock = 45; let BateriasPrecio = 4000; let BateriasOwned = 0;
+let productos = [
+    {nombre: "Vidrio", stock: "50", precio: "1500", peso: "Kg" , owned: "0"},
+    {nombre: "Hierro", stock: "459", precio: "2500", peso: "Kg" , owned: "0"},
+    {nombre: "Aluminio", stock : "238", precio: "2000", peso: "Kg", owned: "0"},
+    {nombre: "Cobre", stock: "154", precio: "3500", peso: "Kg", owned: "0"},
+    {nombre: "Bronce", stock: "375", precio: "5000", peso: "Kg", owned: "0"},
+    {nombre: "Carton", stock: "200", precio: "500", peso: "Kg", owned: "0"},
+    {nombre: "Papel", stock: "184", precio: "250", peso: "Kg", owned: "0"},
+    {nombre: "TapasDePlastico", stock: "427", precio: "750", peso: "Kg", owned: "0"},
+    {nombre: "Aceite", stock: "900", precio: "1250", peso: "M^3", owned: "0"},
+    {nombre: "Baterias", stock: "45", precio: "4000", peso: "Unidad Unica", owned: "0"}
+];
 
 const table = document.getElementById("table");
 const PrincipalMenu = document.getElementById("PrincipalMenu"); // Constantes para Ocultar
-const MostrarStock = document.getElementById("Stock"); // Constantes para Ocultar
-const MostrarCompras = document.getElementById("Compras"); // Constantes para Ocultar
-const MostrarVentas = document.getElementById("Vender"); // Constantes para Ocultar
+const MostrarStock = document.getElementById("Stock"); // Constante para Ocultar la Seccion de "Mostrar Productos"
+const MostrarCompras = document.getElementById("Compras"); // Constante para Ocultar la Seccion de "Comprar Producto"
+const MostrarVentas = document.getElementById("Vender"); // Constante para Ocultar la Seccion de "Vender Producto"
 
-const ButtonMostrarStock = document.getElementById("PMOption1"); // Constantes del Boton para ver la Seccion de "Stock"
-const ButtonMostrarCompras = document.getElementById("PMOption2"); // Constantes del Boton para ver la Seccion de "Compras"
-const ButtonMostrarVenta = document.getElementById("PMOption3"); // Constantes del Boton para ver la Seccion de "Venta"
+const ButtonMostrarStock = document.getElementById("PMOption1"); // Constante del Boton para ver la Seccion de "Stock"
+const ButtonMostrarCompras = document.getElementById("PMOption2"); // Constante del Boton para ver la Seccion de "Compras"
+const ButtonMostrarVenta = document.getElementById("PMOption3"); // Constante del Boton para ver la Seccion de "Venta"
+const ButtonAddProducto = document.getElementById("AddProducto"); // Constante del Boton para ver la Seccion de "Añadir"
 
 const SelectBuyProducto = document.getElementById("ProductoComprar"); // Constante del Producto Seleccionado a Comprar
 const CantidadBuyProducto = document.getElementById("CantidadAComprar"); // Constante de la Cantidad de Producto a Comprar
@@ -61,58 +64,20 @@ table.innerHTML = `
         <td>Producto</td>
         <td>Stock</td>
         <td>Precio</td>
-    </tr>
-    <tr>
-        <td>Vidrio</td>
-        <td>${VidrioStock} Kg</td>
-        <td>${VidrioPrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Hierro</td>
-        <td>${HierroStock} Kg</td>
-        <td>${HierroPrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Aluminio</td>
-        <td>${AluminioStock} Kg</td>
-        <td>${AluminioPrecio} x 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Cobre</td>
-        <td>${CobreStock} Kg</td>
-        <td>${CobrePrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Bronce</td>
-        <td>${BronceStock} Kg</td>
-        <td>${BroncePrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Cartón</td>
-        <td>${CartonStock} Kg</td>
-        <td>${CartonPrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Papel Blanco</td>
-        <td>${PapelStock} Kg</td>
-        <td>${PapelPrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Tapas de Plástico</td>
-        <td>${TapasStock} Kg</td>
-        <td>${TapasPrecio} X 1 Kg</td>
-    </tr>
-    <tr>
-        <td>Aceite de girasol</td>
-        <td>${AceiteStock} M^3</td>
-        <td>${AceitePrecio} X 1 M^3</td>
-    </tr>
-    <tr>
-        <td>Baterías de vehículos</td>
-        <td>${BateriasStock} Unidades</td>
-        <td>${BateriasPrecio} Cada Unidad</td>
+        <td>Peso</td>
     </tr>
     `;
+
+    productos.forEach(productos => {
+        table.innerHTML += `
+            <tr>
+                <td>${productos.nombre}</td>
+                <td>${productos.stock}</td>
+                <td>$${productos.precio}</td>
+                <td>${productos.peso}</td>
+            </tr>
+        `;
+    });
 }
 
 // Mostrar la Lista de Compra de Productos
@@ -124,136 +89,83 @@ ButtonMostrarCompras.addEventListener("click", () => {
 
 // Comprar un Producto, calcular el precio total y restar lo comprado del Stock total
 ButtonComprarProducto.addEventListener("click", () => {
-    const producto = SelectBuyProducto.value;
-    const cantidad = Number(CantidadAComprar.value);
+    const productoSeleccionado = SelectBuyProducto.value;
+    const cantidad = Number(CantidadBuyProducto.value);
 
     if (cantidad <= 0 || isNaN(cantidad)) {
-        alert(`Ingresá una cantidad válida.`);
+        alert("Ingresá una cantidad válida.");
         return;
     }
 
-    let precio = 0;
-    let stock = 0;
-    let unidad = "Kg";
-    switch(producto){
-        case "Vidrio":
-            stock = VidrioStock;
-            precio = VidrioPrecio;
-            unidad = "Kg";
-            break;
+    const producto = productos.find(p => p.nombre === productoSeleccionado);
 
-        case "Hierro":
-            stock = HierroStock;
-            precio = HierroPrecio;
-            unidad = "Kg";
-            break;
-
-        case "Aluminio":
-            stock = AluminioStock;
-            precio = AluminioPrecio;
-            unidad = "Kg";
-            break;
-
-        case "Cobre":
-            stock = CobreStock;
-            precio = CobrePrecio;
-            unidad = "Kg";
-            break;
-
-        case "Bronce":
-            stock = BronceStock;
-            precio = BroncePrecio;
-            unidad = "Kg";
-            break;
-
-        case "Carton":
-            stock = CartonStock;
-            precio = CartonPrecio;
-            unidad = "Kg";
-            break;
-
-        case "Papel":
-            stock = PapelStock;
-            precio = PapelPrecio;
-            unidad = "Kg";
-            break;
-
-        case "TapasDePlastico":
-            stock = TapasStock;
-            precio = TapasPrecio;
-            unidad = "Kg";
-            break;
-
-        case "Aceite":
-            stock = AceiteStock;
-            precio = AceitePrecio;
-            unidad = "M^3";
-            break;
-
-        case "Baterias":
-            stock = BateriasStock;
-            precio = BateriasPrecio;
-            unidad = "Unidad";
-            break;
-
-        default:
-            alert("Producto inválido");
-            return;
-    }
-
-    if (cantidad > stock){
-        alert(`No hay suficiente stock. Disponible: ${stock} ${unidad}`);
+    if (!producto) {
+        alert("Producto inválido.");
         return;
     }
 
-    switch(producto){
-        case "Vidrio":
-            VidrioStock -= cantidad;
-            VidrioOwned += cantidad;
-        break;
-        case "Hierro":
-            HierroStock -= cantidad;
-            HierroOwned += cantidad;
-        break;
-        case "Aluminio":
-            AluminioStock -= cantidad;
-            AluminioOwned += cantidad;
-        break;
-        case "Cobre":
-            CobreStock -= cantidad;
-            CobreOwned += cantidad;
-        break;
-        case "Bronce":
-            BronceStock -= cantidad;
-            BronceOwned += cantidad;
-        break;
-        case "Carton":
-            CartonStock -= cantidad;
-            CartonOwned += cantidad;
-        break;
-        case "Papel":
-            PapelStock -= cantidad;
-            PapelOwned += cantidad;
-        break;
-        case "TapasDePlastico":
-            TapasStock -= cantidad;
-            TapasOwned += cantidad;
-        break;
-        case "Aceite":
-            AceiteStock -= cantidad;
-            AceiteOwned += cantidad;
-        break;
-        case "Baterias":
-            BateriasStock -= cantidad;
-            BateriasOwned += cantidad;
-        break;
+    if (cantidad > producto.stock) {
+        alert(`No hay suficiente stock. Disponible: ${producto.stock} ${producto.peso}`);
+        return;
     }
 
-    const total = cantidad * precio;
-    MensajeCompra.textContent = `Compra realizada: ${cantidad} ${unidad} de ${producto}. Total: $${total}`;
+    producto.stock -= cantidad;
+    producto.owned += cantidad;
+
+    const total = cantidad * producto.precio;
+
+    MensajeCompra.textContent = `Compra realizada: ${cantidad} ${producto.peso} de ${producto.nombre}. Total: $${total}`;
 
     RenderizarTabla();
-    CantidadBuyProducto.value = "";
+});
+
+function actualizarSelectProductos() {
+    SelectBuyProducto.innerHTML = "";
+
+    productos.forEach(productos => {
+        SelectBuyProducto.innerHTML += `
+            <option value="${productos.nombre}">${productos.nombre}</option>
+        `;
+    });
+}
+
+// Añadir Producto
+ButtonAddProducto.addEventListener("click", () => {
+    const nombre = prompt("Ingrese el nombre del producto:");
+    if (!nombre || nombre.trim() === "") {
+        alert("Nombre inválido.");
+        return;
+    }
+
+    const stock = Number(prompt("Ingrese la cantidad de stock:"));
+    if (isNaN(stock) || stock < 0) {
+        alert("Stock inválido.");
+        return;
+    }
+
+    const precio = Number(prompt("Ingrese el precio del producto:"));
+    if (isNaN(precio) || precio < 0) {
+        alert("Precio inválido.");
+        return;
+    }
+
+    const peso = prompt("Ingrese la unidad de medida (Kg, M^3, Unidad, etc):");
+    if (!peso || peso.trim() === "") {
+        alert("Unidad de Peso inválida.");
+        return;
+    }
+
+    productos.push({
+        nombre: nombre.trim(),
+        stock: stock,
+        precio: precio,
+        peso: peso.trim()
+    });
+
+    RenderizarTabla();
+    actualizarSelectProductos();
+
+    alert("Producto añadido correctamente.");
 });
 
 // Mostrar Parte de Venta de Productos
@@ -263,117 +175,32 @@ ButtonMostrarVenta.addEventListener("click", () => {
 });
 
 ButtonVenderProducto.addEventListener("click", () => {
-    const producto = SelectSellProducto.value;
+    const productoSeleccionado = SelectSellProducto.value;
     const cantidad = Number(CantidadAVender.value)
 
     if(cantidad <= 0 || isNaN(cantidad)){
         alert('Ingrese una cantidad valida');
     }
 
-    let precio = 0;
-    let stockOwned = 0;
-    let unidad = "Kg";
+    const producto = productos.find (p => p.nombre == productoSeleccionado);
 
-    switch(producto){
-        case "Vidrio":
-            stockOwned = VidrioOwned;
-            precio = VidrioPrecio;
-            unidad = "Kg";
-        break;
-        case "Hierro":
-            stockOwned = HierroOwned;
-            precio = HierroPrecio;
-            unidad = "Kg";
-        break;
-        case "Aluminio":
-            stockOwned = AluminioOwned;
-            precio = AluminioPrecio;
-            unidad = "Kg";
-        break;
-        case "Cobre":
-            stockOwned = CobreOwned;
-            precio = CobrePrecio;
-            unidad = "Kg";
-        break;
-        case "Carton":
-            stockOwned = CartonOwned;
-            precio = CartonPrecio;
-            unidad = "Kg";
-        break;
-        case "Papel":
-            stockOwned = PapelOwned;
-            precio = PapelPrecio;
-            unidad = "Kg";
-        break;
-        case "TapasDePlastico":
-            stockOwned = TapasOwned;
-            precio = TapasPrecio;
-            unidad = "Kg";
-        break;
-        case "Aceite":
-            stockOwned = AceiteOwned;
-            precio = AceitePrecio;
-            unidad = "M^3";
-        break;
-        case "Baterias":
-            stockOwned = BateriasOwned;
-            precio = BateriasPrecio;
-            unidad = "Unidad";
-        break;
-        default:
-            alert("Producto inválido");
-            return;
-    }
-
-    if (cantidad > stockOwned){
-        alert(`No hay suficiente stock. Disponible: ${stockOwned} ${unidad}`);
+    if(!producto){
+        alert("Producto Invalido.");
         return;
     }
 
-    switch(producto){
-        case "Vidrio":
-            VidrioStock += cantidad;
-            VidrioOwned -= cantidad;
-        break;
-        case "Hierro":
-            HierroStock += cantidad;
-            HierroOwned -= cantidad;
-        break;
-        case "Aluminio":
-            AluminioStock += cantidad;
-            AluminioOwned -= cantidad;
-        break;
-        case "Cobre":
-            CobreStock += cantidad;
-            CobreOwned -= cantidad;
-        break;
-        case "Carton":
-            CartonStock += cantidad;
-            CartonOwned -= cantidad;
-        break;
-        case "Papel":
-            PapelStock += cantidad;
-            PapelOwned -= cantidad;
-        break;
-        case "TapasDePlastico":
-            TapasStock += cantidad;
-            TapasOwned -= cantidad;
-        break;
-        case "Aceite":
-            AceiteStock += cantidad;
-            AceiteOwned -= cantidad;
-        break;
-        case "Baterias":
-            BateriasStock += cantidad;
-            BateriasOwned -= cantidad;
-        break;
+    if (cantidad > producto.owned){
+        alert(`No hay suficiente stock propio. Disponible: ${producto.owned} ${producto.peso}`);
     }
 
-    const total = cantidad * precio;
-    MensajeVenta.textContent = `Venta realizada: ${cantidad} ${unidad} de ${producto}. Total: $${total}`;
+    producto.owned -= cantidad;
+    producto.stock += cantidad;
+
+    const ganancias = cantidad * producto.precio;
+
+    MensajeVenta.textContent = `Venta realizada: ${cantidad} ${producto.peso} de ${producto.nombre}. Ganancias: $${ganancias}`;
 
     RenderizarTabla();
-    CantidadSellProducto.value = "";
 });
 
 // Devuelve al Usuario a la Parte Anterior de la Pagina
