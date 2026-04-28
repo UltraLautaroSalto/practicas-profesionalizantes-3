@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+</head>
+<body>
+
+<h1>Registro de usuarios</h1>
+
+<form action="/register" method="post">
+    <label>Usuario:</label>
+    <input name="username" required><br>
+
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+
+    <button type="submit">Crear usuario</button>
+</form>
+
+<button id="btnMsg">Mostrar mensaje en el servidor</button>
+
+<script>
+function onBtnMsgOnClick() {
+    fetch("/showMessage", { method: "GET" });
+}
+
+function main() {
+    btnMsg.onclick = onBtnMsgOnClick;
+}
+
+window.onload = main;
+</script>
+
+</body>
+</html>
+
