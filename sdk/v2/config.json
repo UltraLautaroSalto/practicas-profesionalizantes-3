@@ -1,0 +1,24 @@
+{
+    "server": {
+        "ip": "127.0.0.1",
+        "port": 3000,
+        "default_path": "./default.html"
+    },
+
+    "database": {
+        "path": "./db.sqlite3"
+    },
+
+    "routes": {
+        "default": "/",
+        "register": "/register",
+        "login": "/login",
+        "showMessage": "/showMessage",
+
+        "role": "/role",
+        "permission": "/permission",
+
+        "assignRole": "/assignRole",
+        "assignPermission": "/assignPermission"
+    }
+}

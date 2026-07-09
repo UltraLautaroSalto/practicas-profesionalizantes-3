@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Sistema de Usuarios</title>
+
+    <style>
+
+        body{
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            margin:40px;
+
+            background:#f2f2f2;
+
+        }
+
+        h1{
+
+            color:#333;
+
+        }
+
+        h2{
+
+            margin-top:40px;
+
+            color:#444;
+
+        }
+
+        form{
+
+            background:white;
+
+            padding:15px;
+
+            margin-bottom:20px;
+
+            border-radius:5px;
+
+            box-shadow:0px 0px 4px rgba(0,0,0,.2);
+
+        }
+
+        label{
+
+            display:inline-block;
+
+            width:150px;
+
+        }
+
+        input{
+
+            margin-bottom:10px;
+
+        }
+
+        button{
+
+            margin-top:10px;
+
+        }
+
+        pre{
+
+            background:white;
+
+            border:1px solid #ccc;
+
+            padding:15px;
+
+            min-height:120px;
+
+            overflow:auto;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Sistema de Administración</h1>
+
+<p>
+
+Desde esta página es posible administrar usuarios,
+roles y permisos.
+
+</p>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- REGISTRO -->
+<!-- ===================================================== -->
+
+<h2>Registrar usuario</h2>
+
+<form id="registerForm">
+
+    <label>Usuario</label>
+
+    <input
+        type="text"
+        name="username"
+        required>
+
+    <br>
+
+    <label>Password</label>
+
+    <input
+        type="password"
+        name="password"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Registrar
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- LOGIN -->
+<!-- ===================================================== -->
+
+<h2>Login</h2>
+
+<form id="loginForm">
+
+    <label>Usuario</label>
+
+    <input
+        type="text"
+        name="username"
+        required>
+
+    <br>
+
+    <label>Password</label>
+
+    <input
+        type="password"
+        name="password"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Iniciar sesión
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- ROLES -->
+<!-- ===================================================== -->
+
+<h2>Crear grupo (Role)</h2>
+
+<form id="createRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="create">
+
+    <label>Nombre</label>
+
+    <input
+        type="text"
+        name="name"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Crear grupo
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Obtener grupo por ID</h2>
+
+<form id="getRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="get">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Buscar grupo
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Listar grupos</h2>
+
+<form id="getAllRolesForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="getAll">
+
+    <button type="submit">
+
+        Mostrar grupos
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Modificar grupo</h2>
+
+<form id="updateRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="update">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <label>Nuevo nombre</label>
+
+    <input
+        type="text"
+        name="name"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Modificar grupo
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Eliminar grupo</h2>
+
+<form id="deleteRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="delete">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Eliminar grupo
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- ASIGNAR ROL A USUARIO -->
+<!-- ===================================================== -->
+
+<h2>Asignar grupo a un usuario</h2>
+
+<form id="assignRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="assign">
+
+    <label>ID Usuario</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <label>ID Grupo</label>
+
+    <input
+        type="number"
+        name="roleId"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Asignar grupo
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+<!-- QUITAR ROL -->
+<!-- ===================================================== -->
+
+<h2>Quitar grupo a un usuario</h2>
+
+<form id="removeRoleForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="remove">
+
+    <label>ID Usuario</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <label>ID Grupo</label>
+
+    <input
+        type="number"
+        name="roleId"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Quitar grupo
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+<!-- CONSULTAR ROLES DE UN USUARIO -->
+<!-- ===================================================== -->
+
+<h2>Consultar grupos de un usuario</h2>
+
+<form id="userRolesForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="getUserRoles">
+
+    <label>ID Usuario</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Consultar grupos
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PERMISOS -->
+<!-- ===================================================== -->
+
+<h2>Crear permiso</h2>
+
+<form id="createPermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="create">
+
+    <label>Nombre</label>
+
+    <input
+        type="text"
+        name="name"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Crear permiso
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Obtener permiso por ID</h2>
+
+<form id="getPermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="get">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Buscar permiso
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Listar permisos</h2>
+
+<form id="getAllPermissionsForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="getAll">
+
+    <button type="submit">
+
+        Mostrar permisos
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Modificar permiso</h2>
+
+<form id="updatePermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="update">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <label>Nuevo nombre</label>
+
+    <input
+        type="text"
+        name="name"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Modificar permiso
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+
+<h2>Eliminar permiso</h2>
+
+<form id="deletePermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="delete">
+
+    <label>ID</label>
+
+    <input
+        type="number"
+        name="id"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Eliminar permiso
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- ASIGNAR PERMISO A UN GRUPO -->
+<!-- ===================================================== -->
+
+<h2>Asignar permiso a un grupo</h2>
+
+<form id="assignPermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="assign">
+
+    <label>ID Grupo</label>
+
+    <input
+        type="number"
+        name="roleId"
+        required>
+
+    <br>
+
+    <label>ID Permiso</label>
+
+    <input
+        type="number"
+        name="permissionId"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Asignar permiso
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+<!-- QUITAR PERMISO -->
+<!-- ===================================================== -->
+
+<h2>Quitar permiso de un grupo</h2>
+
+<form id="removePermissionForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="remove">
+
+    <label>ID Grupo</label>
+
+    <input
+        type="number"
+        name="roleId"
+        required>
+
+    <br>
+
+    <label>ID Permiso</label>
+
+    <input
+        type="number"
+        name="permissionId"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Quitar permiso
+
+    </button>
+
+</form>
+
+<!-- ===================================================== -->
+<!-- CONSULTAR PERMISOS DE UN GRUPO -->
+<!-- ===================================================== -->
+
+<h2>Consultar permisos de un grupo</h2>
+
+<form id="rolePermissionsForm">
+
+    <input
+        type="hidden"
+        name="action"
+        value="getRolePermissions">
+
+    <label>ID Grupo</label>
+
+    <input
+        type="number"
+        name="roleId"
+        required>
+
+    <br>
+
+    <button type="submit">
+
+        Consultar permisos
+
+    </button>
+
+</form>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- MENSAJE DEL SERVIDOR -->
+<!-- ===================================================== -->
+
+<h2>Servidor</h2>
+
+<button id="btnMsg">
+
+    Mostrar mensaje en el servidor
+
+</button>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- RESULTADO -->
+<!-- ===================================================== -->
+
+<h2>Resultado</h2>
+
+<pre id="resultado">
+
+Esperando una operación...
+
+</pre>
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT -->
+<!-- (Comienza en la Parte 4) -->
+<!-- ===================================================== -->
+
+<script>
+
+
+// =====================================================
+// Función general para enviar formularios
+// =====================================================
+
+async function sendForm(url, formId) {
+
+    const form = document.getElementById(formId);
+
+    const data = new FormData(form);
+
+    const params = new URLSearchParams(data);
+
+
+    try {
+
+        const response = await fetch(url, {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+
+            },
+
+            body: params
+
+        });
+
+
+        const result = await response.json();
+
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(result, null, 4);
+
+
+    }
+
+    catch(error) {
+
+
+        document.getElementById("resultado").textContent =
+            "Error: " + error.message;
+
+
+    }
+
+}
+
+
+
+// =====================================================
+// Registro
+// =====================================================
+
+document
+    .getElementById("registerForm")
+    .addEventListener("submit", function(e){
+
+        e.preventDefault();
+
+        sendForm(
+            "/register",
+            "registerForm"
+        );
+
+    });
+
+
+
+// =====================================================
+// Login
+// =====================================================
+
+document
+    .getElementById("loginForm")
+    .addEventListener("submit", function(e){
+
+        e.preventDefault();
+
+        sendForm(
+            "/login",
+            "loginForm"
+        );
+
+    });
+
+
+
+// =====================================================
+// Roles
+// =====================================================
+
+document
+    .getElementById("createRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "createRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("getRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "getRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("getAllRolesForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "getAllRolesForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("updateRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "updateRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("deleteRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "deleteRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("assignRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "assignRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("removeRoleForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "removeRoleForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("userRolesForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/role",
+            "userRolesForm"
+        );
+
+    });
+
+
+
+// =====================================================
+// Permisos
+// =====================================================
+
+document
+    .getElementById("createPermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "createPermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("getPermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "getPermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("getAllPermissionsForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "getAllPermissionsForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("updatePermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "updatePermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("deletePermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "deletePermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("assignPermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "assignPermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("removePermissionForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "removePermissionForm"
+        );
+
+    });
+
+
+
+document
+    .getElementById("rolePermissionsForm")
+    .addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        sendForm(
+            "/permission",
+            "rolePermissionsForm"
+        );
+
+    });
+
+
+
+// =====================================================
+// Mensaje del servidor
+// =====================================================
+
+document
+    .getElementById("btnMsg")
+    .addEventListener("click", async ()=>{
+
+
+        try {
+
+
+            const response = await fetch(
+                "/showMessage"
+            );
+
+
+            const result = await response.json();
+
+
+            document
+                .getElementById("resultado")
+                .textContent =
+                    JSON.stringify(
+                        result,
+                        null,
+                        4
+                    );
+
+
+        }
+
+        catch(error){
+
+
+            document
+                .getElementById("resultado")
+                .textContent =
+                    "Error: " + error.message;
+
+
+        }
+
+
+    });
+
+
+</script>
+
+
+</body>
+
+</html>
+
