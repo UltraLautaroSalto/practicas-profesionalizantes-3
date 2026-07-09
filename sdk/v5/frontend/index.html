@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+</head>
+
+<body>
+
+<h1>Registro de usuarios</h1>
+
+<form action="/register" method="post">
+    <label>Usuario:</label>
+    <input name="username" required><br>
+
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+
+    <button type="submit">Crear usuario</button>
+</form>
+
+<button id="btnMsg">Mostrar mensaje en el servidor</button>
+
+<button id="btnLog">Ejecutar /log</button>
+
+<button id="btnHello">Ejecutar /sayHello</button>
+
+<script>
+
+const API_URL = "http://localhost:8080";
+
+const currentUser = "admin";
+const currentPassword = "1234";
+
+let token = "";
+
+/*
+    Función genérica para consumir la WebAPI RPC.
+
+    - Siempre utiliza POST.
+    - Siempre envía JSON.
+    - Siempre procesa respuestas JSON.
+    - Lanza excepciones para cualquier código distinto de 200.
+*/
+async function RPCWebAPIFetch(name, content = {})
+{
+    const response = await fetch(API_URL + "/" + name,
+    {
+        method: "POST",
+
+        headers:
+        {
+            "Content-Type": "application/json",
+
+            "Authorization": "Bearer " + token,
+
+            "X-API-Version": "1.0",
+
+            "x-user-id": currentUser,
+
+            "x-api-key": currentPassword
+        },
+
+        body: JSON.stringify(content)
+    });
+
+    let data = {};
+
+    try
+    {
+        data = await response.json();
+    }
+    catch
+    {
+        data = {};
+    }
+
+    switch(response.status)
+    {
+        case 200:
+            return data;
+
+        case 202:
+        case 400:
+        case 401:
+        case 422:
+        case 500:
+
+            throw data;
+
+        default:
+
+            throw {
+                exception: "UNKNOWN_ERROR",
+                detail: [
+                    "HTTP " + response.status
+                ]
+            };
+    }
+}
+
+/*
+    Login de la aplicación.
+*/
+async function login()
+{
+    try
+    {
+        const data = await RPCWebAPIFetch("login",
+        {
+            username: currentUser,
+            password: currentPassword
+        });
+
+        token = data.token;
+
+        console.log("TOKEN:", token);
+    }
+    catch(ex)
+    {
+        console.error("Error de login");
+
+        console.error(ex);
+    }
+}
+
+/*
+    Ejecuta cualquier endpoint protegido.
+*/
+async function callEndpoint(name)
+{
+    try
+    {
+        const data = await RPCWebAPIFetch(name);
+
+        console.log(name, data);
+    }
+    catch(ex)
+    {
+        console.error(name);
+
+        console.error(ex);
+    }
+}
+
+window.onload = async function()
+{
+    await login();
+
+    btnLog.onclick = () => callEndpoint("log");
+
+    btnHello.onclick = () => callEndpoint("sayHello");
+};
+
+</script>
+
+</body>
+</html>
